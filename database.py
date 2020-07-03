@@ -14,4 +14,4 @@ def create_data(file):
 
 
 if __name__ == '__main__':
-    create_data("test.db")
+    create_data("data.db")

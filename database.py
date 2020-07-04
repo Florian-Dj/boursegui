@@ -26,7 +26,8 @@ def create_table(co):
     c = co.cursor()
     c.execute("""
         CREATE TABLE IF NOT EXISTS company (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id INTEGER PRIMARY KEYogle drive
+             AUTOINCREMENT,
             name TEXT NOT NULL,
             code TEXT NOT NULL
         )""")

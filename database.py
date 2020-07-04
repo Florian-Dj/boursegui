@@ -24,14 +24,25 @@ def connection():
 
 def create_table(co):
     c = co.cursor()
-    c.execute("""
-        CREATE TABLE IF NOT EXISTS company (
-            id INTEGER PRIMARY KEYogle drive
-             AUTOINCREMENT,
-            name TEXT NOT NULL,
-            code TEXT NOT NULL
+    c.execute("""CREATE TABLE IF NOT EXISTS company (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name varchar(255) NOT NULL UNIQUE,
+            code varchar(255) NOT NULL UNIQUE
         )""")
-    print("Table Company Create")
+
+
+def insert_into(table, column, value):
+    try:
+        conn = connection()
+        c = conn.cursor()
+        sql = "INSERT INTO {t} {c} VALUES {v}".format(t=table, c=column, v=value)
+        c.execute(sql)
+        conn.commit()
+        print("Add {v} in table {t}".format(v=value, t=table))
+    except Error as e:
+        print(e)
+
+
 
 
 if __name__ == '__main__':

@@ -36,21 +36,15 @@ def cli():
 
 
 def add_society():
-    society = input("Code de la société a rajouter : ")
-    url = "https://www.boursorama.com/cours/" + society
+    code = input("Code de la société a rajouter : ")
+    url = "https://www.boursorama.com/cours/" + code
     req = requests.get(url)
     soup = BeautifulSoup(req.content, 'html.parser')
     name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
-    print(society, name)
+    database.insert_into("company", ("name", "code"), (name, code))
 
 
 def list_society():
-    with open('data_society.json', "r") as file:
-        company = json.load(file)
-        i = 1
-        for code, companies in company["society"].items():
-            print("{i} - {c} ==> {com}".format(i=i, c=code, com=companies))
-            i += 1
 
 
 def parse():

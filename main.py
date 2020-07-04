@@ -42,9 +42,16 @@ def add_society():
     soup = BeautifulSoup(req.content, 'html.parser')
     name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
     database.insert_into("company", ("name", "code"), (name, code))
+    time.sleep(2)
+    cli()
 
 
 def list_society():
+    results = database.select()
+    for result in results:
+        print("Name : {}, Code : {}".format(result[0], result[1], result[2]))
+    time.sleep(2)
+    cli()
 
 
 def parse():
@@ -63,5 +70,4 @@ def parse():
 
 
 if __name__ == '__main__':
-    # parse()
     cli()

@@ -43,6 +43,15 @@ def insert_into(table, column, value):
         print(e)
 
 
+def select():
+    try:
+        conn = connection()
+        c = conn.cursor()
+        c.execute("SELECT * FROM company")
+        result = c.fetchall()
+        return result
+    except Error as e:
+        print(e)
 
 
 if __name__ == '__main__':

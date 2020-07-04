@@ -41,9 +41,6 @@ def add_society():
     soup = BeautifulSoup(req.content, 'html.parser')
     name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
     print(society, name)
-    data = {society: name}
-    with open("data.json", "w") as file:
-        json.dump(data_info[society][data], file, indent=4)
 
 
 def list_society():

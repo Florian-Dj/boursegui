@@ -2,12 +2,10 @@
 
 import json
 import time
-from datetime import datetime
 import database
 import requests
 from bs4 import BeautifulSoup
 
-data_society = dict()
 data_info = dict()
 
 
@@ -42,7 +40,7 @@ def add_society():
     soup = BeautifulSoup(req.content, 'html.parser')
     name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
     database.insert_into("company", ("name", "code"), (name, code))
-    time.sleep(2)
+    time.sleep(5)
     cli()
 
 
@@ -62,9 +60,6 @@ def parse():
     volume = soup.find_all('span', class_="c-instrument c-instrument--totalvolume")[0].text
     value = soup.find_all('span', class_="c-instrument c-instrument--last")[0].text
     var = soup.find_all('span', class_="c-instrument c-instrument--variation")[0].text
-    date = datetime.now().isoformat(timespec='minutes')
-    data_info["1rPFDJ"] = {'name': name, 'valeur': value, "variation": var, 'volume': volume, 'date': date}
-    print(data_info)
     with open("data.json", "w") as file:
         json.dump(data_info, file, indent=4)
 

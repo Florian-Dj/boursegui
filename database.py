@@ -40,7 +40,7 @@ def insert_into(table, column, value):
         conn.commit()
         print("Add {v} in table {t}".format(v=value, t=table))
     except Error as e:
-        print(e)
+        print("\nCompagnie déjà dans la liste !\n")
 
 
 def select():

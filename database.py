@@ -22,7 +22,7 @@ def connection():
     return conn
 
 
-def create_table(co):
+def create_table_company(co):
     c = co.cursor()
     c.execute("""CREATE TABLE IF NOT EXISTS company (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,7 +38,7 @@ def insert_into(table, column, value):
         sql = "INSERT INTO {t} {c} VALUES {v}".format(t=table, c=column, v=value)
         c.execute(sql)
         conn.commit()
-        print("Add {v} in table {t}".format(v=value, t=table))
+        print("Add Company Name : {n}; Code : {c} in table {t}".format(n=value[0], c=value[1], t=table))
     except Error as e:
         print("\nCompagnie déjà dans la liste !\n")
 
@@ -58,4 +58,4 @@ if __name__ == '__main__':
     create_data()
     conn = connection()
     if conn is not None:
-        create_table(conn)
+        create_table_company(conn)

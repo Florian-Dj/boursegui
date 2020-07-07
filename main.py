@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import json
 import time
 import database
 import requests
@@ -9,7 +8,7 @@ from bs4 import BeautifulSoup
 data_info = dict()
 
 
-def cli():
+def main():
     print("""
     1 - Run
     2 - Ajouter Société
@@ -30,7 +29,7 @@ def cli():
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)
-        cli()
+        main()
 
 
 def add_society():
@@ -41,28 +40,31 @@ def add_society():
     name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
     database.insert_into("company", ("name", "code"), (name, code))
     time.sleep(5)
-    cli()
+    main()
 
 
 def list_society():
     results = database.select()
     for result in results:
-        print("Name : {}, Code : {}".format(result[0], result[1], result[2]))
+        print("Name : {}; Code : {}".format(result[1], result[2]))
     time.sleep(2)
-    cli()
+    main()
 
 
 def parse():
-    url = "https://www.boursorama.com/cours/1rPNACON/"
-    req = requests.get(url)
-    soup = BeautifulSoup(req.content, 'html.parser')
-    name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
-    volume = soup.find_all('span', class_="c-instrument c-instrument--totalvolume")[0].text
-    value = soup.find_all('span', class_="c-instrument c-instrument--last")[0].text
-    var = soup.find_all('span', class_="c-instrument c-instrument--variation")[0].text
-    with open("data.json", "w") as file:
-        json.dump(data_info, file, indent=4)
+    results = database.select()
+    while True:
+        for result in results:
+            url = "https://www.boursorama.com/cours/" + result[2]
+            req = requests.get(url)
+            soup = BeautifulSoup(req.content, 'html.parser')
+            name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
+            volume = soup.find_all('span', class_="c-instrument c-instrument--totalvolume")[0].text.replace(" ", "")
+            value = soup.find_all('span', class_="c-instrument c-instrument--last")[0].text
+            var = soup.find_all('span', class_="c-instrument c-instrument--variation")[0].text
+            print(name, volume, value, var)
+        time.sleep(60)
 
 
 if __name__ == '__main__':
-    cli()
+    main()

@@ -38,7 +38,7 @@ def insert_into(table, column, value):
         sql = "INSERT INTO {t} {c} VALUES {v}".format(t=table, c=column, v=value)
         c.execute(sql)
         conn.commit()
-        print("Add Company Name : {n}; Code : {c} in table {t}".format(n=value[0], c=value[1], t=table))
+        print("Add Company Name: {n}; Code: {c} in table {t}".format(n=value[0], c=value[1], t=table))
     except Error as e:
         print("\nCompagnie déjà dans la liste !\n")
 

@@ -3,6 +3,7 @@
 import time
 import database
 import requests
+import datetime
 from bs4 import BeautifulSoup
 
 data_info = dict()
@@ -46,12 +47,13 @@ def add_society():
 def list_society():
     results = database.select()
     for result in results:
-        print("Name : {}; Code : {}".format(result[1], result[2]))
+        print("Name: {}; Code: {}".format(result[1], result[2]))
     time.sleep(2)
     main()
 
 
 def parse():
+    time_now = datetime.datetime.now().strftime("%H:%M:%S")
     results = database.select()
     while True:
         for result in results:
@@ -63,6 +65,8 @@ def parse():
             value = soup.find_all('span', class_="c-instrument c-instrument--last")[0].text
             var = soup.find_all('span', class_="c-instrument c-instrument--variation")[0].text
             print(name, volume, value, var)
+        if not "9:29AM" > time_now > "5:40PM":
+            break
         time.sleep(60)
 
 

@@ -24,7 +24,7 @@ def main():
     elif choose == "2":
         add_society()
     elif choose == "3":
-        print("3")
+        delete_society()
     elif choose == "4":
         list_society()
     else:
@@ -44,30 +44,59 @@ def add_society():
     main()
 
 
+def delete_society():
+    results = database.select()
+    if len(results) > 0:
+        i = 1
+        for result in results:
+            print("{} - Name: {}; Code: {}".format(i, result[1], result[2]))
+            i += 1
+        choose = input("Quelle société voulez-vous enlever ? ")
+        choose = int(choose)
+        if 0 < choose <= len(results):
+            database.delete("company", results[choose - 1])
+        time.sleep(3)
+        main()
+    else:
+        print("\nAucune Entreprise dans la liste")
+        time.sleep(2)
+        main()
+
+
 def list_society():
     results = database.select()
-    for result in results:
-        print("Name: {}; Code: {}".format(result[1], result[2]))
-    time.sleep(2)
-    main()
+    if len(results) > 0:
+        for result in results:
+            print("Name: {}; Code: {}".format(result[1], result[2]))
+        time.sleep(2)
+        main()
+    else:
+        print("\nAucune Entreprise dans la liste")
+        time.sleep(2)
+        main()
 
 
 def parse():
-    time_now = datetime.datetime.now().strftime("%H:%M:%S")
     results = database.select()
-    while True:
-        for result in results:
-            url = "https://www.boursorama.com/cours/" + result[2]
-            req = requests.get(url)
-            soup = BeautifulSoup(req.content, 'html.parser')
-            name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
-            volume = soup.find_all('span', class_="c-instrument c-instrument--totalvolume")[0].text.replace(" ", "")
-            value = soup.find_all('span', class_="c-instrument c-instrument--last")[0].text
-            var = soup.find_all('span', class_="c-instrument c-instrument--variation")[0].text
-            print(name, volume, value, var)
-        if not "9:29AM" > time_now > "5:40PM":
-            break
-        time.sleep(60)
+    if len(results) > 0:
+        time_now = datetime.datetime.now().strftime("%H:%M:%S")
+        while True:
+            for result in results:
+                url = "https://www.boursorama.com/cours/" + result[2]
+                req = requests.get(url)
+                soup = BeautifulSoup(req.content, 'html.parser')
+                name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
+                volume = soup.find_all('span', class_="c-instrument c-instrument--totalvolume")[0].text.replace(" ", "")
+                value = soup.find_all('span', class_="c-instrument c-instrument--last")[0].text
+                var = soup.find_all('span', class_="c-instrument c-instrument--variation")[0].text
+                print(name, volume, value, var)
+            if not "9:29AM" > time_now > "5:40PM":
+                break
+            time.sleep(60)
+    else:
+        print("\nAucune Entreprise dans la liste")
+        time.sleep(2)
+        main()
 
 
 if __name__ == '__main__':

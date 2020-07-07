@@ -43,6 +43,19 @@ def insert_into(table, column, value):
         print("\nCompagnie déjà dans la liste !\n")
 
 
+def delete(table, company):
+    try:
+        conn = connection()
+        c = conn.cursor()
+        sql = "DELETE FROM {t} WHERE id={i}".format(t=table, i=company[0])
+        c.execute(sql)
+        conn.commit()
+        conn.close()
+        print("Société {n} supprimée".format(n=company[1]))
+    except Error as e:
+        print(e)
+
+
 def select():
     try:
         conn = connection()

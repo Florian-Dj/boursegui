@@ -4,19 +4,20 @@ import time
 import database
 import requests
 import datetime
+import main
 from bs4 import BeautifulSoup
 
 
-def main():
+def home():
     print("""
     1 - Run
     2 - Ajouter Société
     3 - Supprimer Société
     4 - Liste Société
-    0 - Quitter""")
+    0 - Retour""")
     choose = input("\nAction que vous voulez effectuer : ")
     if choose == "0":
-        exit()
+        main.main()
     elif choose == "1":
         parse()
     elif choose == "2":
@@ -28,7 +29,7 @@ def main():
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)
-        main()
+        home()
 
 
 def add_society():
@@ -39,7 +40,7 @@ def add_society():
     name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
     database.insert_into("company", ("name", "code"), (name, code))
     time.sleep(5)
-    main()
+    home()
 
 
 def delete_society():
@@ -54,11 +55,11 @@ def delete_society():
         if 0 < choose <= len(results):
             database.delete("company", results[choose - 1])
         time.sleep(3)
-        main()
+        home()
     else:
         print("\nAucune Entreprise dans la liste")
         time.sleep(2)
-        main()
+        home()
 
 
 def list_society():
@@ -67,11 +68,11 @@ def list_society():
         for result in results:
             print("Name: {}; Code: {}".format(result[1], result[2]))
         time.sleep(2)
-        main()
+        home()
     else:
         print("\nAucune Entreprise dans la liste")
         time.sleep(2)
-        main()
+        home()
 
 
 def parse():
@@ -92,13 +93,9 @@ def parse():
             if not "9:29AM" > time_now > "5:40PM":
                 print("Bourse fermée")
                 time.sleep(2)
-                main()
+                home()
             time.sleep(60)
     else:
         print("\nAucune Entreprise dans la liste")
         time.sleep(2)
-        main()
-
-
-if __name__ == '__main__':
-    main()
+        home()

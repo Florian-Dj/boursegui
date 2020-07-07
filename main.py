@@ -6,8 +6,6 @@ import requests
 import datetime
 from bs4 import BeautifulSoup
 
-data_info = dict()
-
 
 def main():
     print("""
@@ -81,17 +79,20 @@ def parse():
     if len(results) > 0:
         time_now = datetime.datetime.now().strftime("%H:%M:%S")
         while True:
+            if not "9:29AM" > time_now > "5:40PM":
+                print("Bourse fermé")
+                time.sleep(2)
+                main()
             for result in results:
                 url = "https://www.boursorama.com/cours/" + result[2]
                 req = requests.get(url)
                 soup = BeautifulSoup(req.content, 'html.parser')
                 name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
                 volume = soup.find_all('span', class_="c-instrument c-instrument--totalvolume")[0].text.replace(" ", "")
+                vol_var = soup.find_all('p', class_="c-list-info__value u-color-big-stone")[7].text.replace(" ", "").replace("\n", "")
                 value = soup.find_all('span', class_="c-instrument c-instrument--last")[0].text
                 var = soup.find_all('span', class_="c-instrument c-instrument--variation")[0].text
-                print(name, volume, value, var)
-            if not "9:29AM" > time_now > "5:40PM":
-                break
+                print(name, value, var, volume, vol_var)
             time.sleep(60)
     else:
         print("\nAucune Entreprise dans la liste")

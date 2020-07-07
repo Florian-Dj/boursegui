@@ -6,18 +6,21 @@ import time
 
 def main():
     print("""
-    1 - Liste
-    2 - Dividende
-    3 - CAC40
+    1 - Run
+    2 - Société
+    3 - Dividende
+    4 - CAC40
     0 - Quitter""")
     choose = input("\nAction que vous voulez effectuer : ")
     if choose == "0":
         exit()
     elif choose == "1":
-        parse.home()
+        parse.parse()
     elif choose == "2":
-        print("Dividende")
+        parse.home()
     elif choose == "3":
+        print("Dividende")
+    elif choose == "4":
         print("Cac40")
     else:
         print("\nMerci de choisir un choix valide")

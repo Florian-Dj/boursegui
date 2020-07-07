@@ -10,21 +10,18 @@ from bs4 import BeautifulSoup
 
 def home():
     print("""
-    1 - Run
-    2 - Ajouter Société
-    3 - Supprimer Société
-    4 - Liste Société
+    1 - Ajouter Société
+    2 - Supprimer Société
+    3 - Liste Société
     0 - Retour""")
     choose = input("\nAction que vous voulez effectuer : ")
     if choose == "0":
         main.main()
     elif choose == "1":
-        parse()
-    elif choose == "2":
         add_society()
-    elif choose == "3":
+    elif choose == "2":
         delete_society()
-    elif choose == "4":
+    elif choose == "3":
         list_society()
     else:
         print("\nMerci de choisir un choix valide")

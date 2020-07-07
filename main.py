@@ -80,7 +80,7 @@ def parse():
         time_now = datetime.datetime.now().strftime("%H:%M:%S")
         while True:
             if not "9:29AM" > time_now > "5:40PM":
-                print("Bourse fermé")
+                print("Bourse fermée")
                 time.sleep(2)
                 main()
             for result in results:

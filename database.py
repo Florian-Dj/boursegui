@@ -32,6 +32,19 @@ def create_table_company(co):
     c.execute(create)
 
 
+def create_table_interest(co):
+    c = co.cursor()
+    create = """CREATE TABLE IF NOT EXISTS interest (
+            company_id INTEGER,
+            value float NOT NULL,
+            interest int NOT NULL,
+            years int,
+            
+            FOREIGN KEY (company_id) REFERENCES company (id)
+        )"""
+    c.execute(create)
+
+
 def insert_into_company(column, value):
     try:
         conn = connection()
@@ -40,6 +53,17 @@ def insert_into_company(column, value):
         c.execute(sql)
         conn.commit()
         print("Ajout Compagnie Nom: {n}; Code: {c}".format(n=value[0], c=value[1]))
+    except Error as e:
+        print("\nCompagnie déjà dans la liste !\n")
+
+
+def insert_into_interest(column, value):
+    try:
+        conn = connection()
+        c = conn.cursor()
+        sql = "INSERT INTO interest {c} VALUES {v}".format(c=column, v=value)
+        c.execute(sql)
+        conn.commit()
     except Error as e:
         print("\nCompagnie déjà dans la liste !\n")
 
@@ -73,4 +97,5 @@ if __name__ == '__main__':
     conn = connection()
     if conn is not None:
         create_table_company(conn)
+        create_table_interest(conn)
     conn.close()

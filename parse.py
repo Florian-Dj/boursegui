@@ -63,7 +63,7 @@ def list_society():
     results = database.select()
     if len(results) > 0:
         for result in results:
-            print("Name: {}; Code: {}".format(result[1], result[2]))
+            print("Nom: {}; Code: {}".format(result[1], result[2]))
         time.sleep(2)
         home()
     else:

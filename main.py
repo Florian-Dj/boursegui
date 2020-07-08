@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import parse
 import time
+import parse
+import dividend
 
 
 def main():
@@ -19,7 +20,7 @@ def main():
     elif choose == "2":
         parse.home()
     elif choose == "3":
-        print("Dividende")
+        dividend.home()
     elif choose == "4":
         print("Portefeuille")
     else:

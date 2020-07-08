@@ -13,6 +13,7 @@ def home():
     1 - Dividende 2020
     2 - Dividende 2021
     3 - Dividende 2022
+    4 - Dividende Société
     0 - Retour""")
     choose = input("\nAction que vous voulez effectuer : ")
     if choose == "0":
@@ -23,6 +24,8 @@ def home():
         dividend(2021)
     elif choose == "3":
         dividend(2022)
+    elif choose == "4":
+        print("Dividende d'une société")
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)
@@ -30,7 +33,8 @@ def home():
 
 
 def dividend(year):
-    results = database.select()
+    sql = "SELECT * FROM company"
+    results = database.select(sql)
     if len(results) > 0:
         print("\t\t----- Dividendes {y} -----".format(y=year))
         for result in results:
@@ -65,4 +69,18 @@ def dividend(year):
 
 def check():
     print(datetime.datetime.now().strftime("%Y-%m-%d"))
+    sql = "SELECT name, value, interest, years FROM company INNER JOIN interest ON company.id = interest.company_id"
+    results = database.select(sql)
+    if len(results) > 0:
+        for result in results:
+            print("Nom: {}; Value: {}; Interest: {}; Years: {}".format(result[0], result[1], result[2], result[3]))
+        time.sleep(2)
+        home()
+    else:
+        print("\nAucune Entreprise dans la liste")
+        time.sleep(2)
+        home()
 
+
+if __name__ == '__main__':
+    check()

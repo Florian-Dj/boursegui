@@ -66,7 +66,8 @@ def delete_society():
 
 
 def list_society():
-    results = database.select()
+    sql = "SELECT * FROM company"
+    results = database.select(sql)
     if len(results) > 0:
         for result in results:
             print("Nom: {}; Code: {}".format(result[1], result[2]))
@@ -79,7 +80,8 @@ def list_society():
 
 
 def parse():
-    results = database.select()
+    sql = "SELECT * FROM company"
+    results = database.select(sql)
     if len(results) > 0:
         time_now = datetime.datetime.now().strftime("%H:%M:%S")
         while True:

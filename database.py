@@ -40,6 +40,7 @@ def create_table_interest(co):
             value       FLOAT   NOT NULL,
             interest    INTEGER NOT NULL,
             years       INTEGER NOT NULL,
+            date        DATE,
             
             CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES company(id) ON DELETE CASCADE
         )"""
@@ -72,11 +73,11 @@ def delete(table, company):
         print(e)
 
 
-def select():
+def select(sql):
     try:
         conn = connection()
         c = conn.cursor()
-        c.execute("SELECT * FROM company")
+        c.execute(sql)
         result = c.fetchall()
         return result
     except Error as e:

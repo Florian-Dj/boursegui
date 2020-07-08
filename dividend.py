@@ -56,8 +56,10 @@ def dividend(year):
                 value_div = soup.find_all('td', class_="c-table__cell c-table__cell--dotted c-table__cell--inherit-height c-table__cell--align-top / u-text-left u-text-right u-ellipsis")[nb].text.replace(" ", "").replace("\n", "")
             interest = round(float(value_div[:-3]) * 100 / float(value_action), 2)
             print("{n} -  Valeur: {v}; Date: {dd}; Intêret: {i}%".format(n=result[1], v=value_div, dd=dividend_date, i=interest))
-            sql = "INSERT INTO interest ('company_id', 'value', 'interest', 'years') VALUES ('{}', '{}', '{}', '{}')"\
-                .format(result[0], value_div[:-3], interest, year)
+            date_now = datetime.datetime.now().strftime("%Y-%m-%d")
+            print(date_now)
+            sql = "INSERT INTO interest (company_id, value, interest, years) VALUES ({}, {}, {}, {})"\
+                .format(result[0], value_div[:-3], interest, year, date_now)
             database.insert_data(sql)
         time.sleep(2)
         home()

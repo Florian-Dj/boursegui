@@ -37,8 +37,8 @@ def add_society():
         soup = BeautifulSoup(req.content, 'html.parser')
         name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
         sql = """INSERT INTO company ('name', 'code') VALUES ('{n}', '{c}')""".format(n=name, c=code)
-        test = database.insert_data(sql)
-        if test == "ok":
+        request = database.insert_data(sql)
+        if request == "good":
             print("Ajout Compagnie Nom: {n}; Code: {c}".format(n=name, c=code))
     else:
         print("Code Société Erreur")

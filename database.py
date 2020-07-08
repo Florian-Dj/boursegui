@@ -46,18 +46,6 @@ def create_table_interest(co):
     c.execute(create)
 
 
-def insert_into_company(column, value):
-    try:
-        conn = connection()
-        c = conn.cursor()
-        sql = "INSERT INTO company {c} VALUES {v}".format(c=column, v=value)
-        c.execute(sql)
-        conn.commit()
-        conn.close()
-    except Error as e:
-        print("\nCompagnie déjà dans la liste !\n")
-
-
 def insert_data(sql):
     try:
         conn = connection()
@@ -65,7 +53,7 @@ def insert_data(sql):
         c.execute(sql)
         conn.commit()
         conn.close()
-        return "ok"
+        return "good"
     except Error as e:
         # print(e)
         print("\nCompagnie déjà dans la liste !\n")

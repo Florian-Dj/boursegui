@@ -38,9 +38,9 @@ def create_table_interest(co):
     create = """CREATE TABLE IF NOT EXISTS interest (
             company_id  INTEGER,
             value       FLOAT   NOT NULL,
-            interest    INTEGER NOT NULL,
             years       INTEGER NOT NULL,
-            date        DATE    DEFAULT CURRENT_DATE,
+            date_div    DATE    DEFAULT NULL,
+            date_update DATE    DEFAULT CURRENT_DATE,
             
             CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES company(id) ON DELETE CASCADE
         )"""
@@ -56,7 +56,7 @@ def insert_data(sql):
         conn.close()
         return "good"
     except Error as e:
-        # print(e)
+        print(e)
         print("\nCompagnie déjà dans la liste !\n")
 
 

@@ -18,8 +18,6 @@ def home():
         main.main()
     elif choose == "1":
         list_dividend_2020()
-    elif choose == "4":
-        analysis_dividend()
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)

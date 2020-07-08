@@ -77,6 +77,9 @@ def parse():
     if len(results) > 0:
         time_now = datetime.datetime.now().strftime("%H:%M:%S")
         while True:
+            print()
+            print("----- {t} -----".format(t=time_now))
+            print()
             for result in results:
                 url = "https://www.boursorama.com/cours/" + result[2]
                 req = requests.get(url)
@@ -86,7 +89,8 @@ def parse():
                 vol_var = soup.find_all('li', class_="c-list-info__item--small-gutter")[2].text.replace(" ", "").split("\n")[3]
                 value = soup.find_all('span', class_="c-instrument c-instrument--last")[0].text
                 var = soup.find_all('span', class_="c-instrument c-instrument--variation")[0].text
-                print(name, value, var, volume, vol_var)
+                print("\t\t{n}\n Action : {val}\t{var}\n Volume : {vo}\t{vov}".format(n=name, val=value, var=var, vo=volume, vov=vol_var))
+                print()
             if "9:29AM" < time_now < "5:40PM":
                 print("Bourse fermée")
                 time.sleep(2)

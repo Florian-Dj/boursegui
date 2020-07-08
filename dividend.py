@@ -9,20 +9,20 @@ import database
 
 def home():
     print("""
-    1 - Liste Dividende
+    1 - Liste Dividende 2020
     0 - Retour""")
     choose = input("\nAction que vous voulez effectuer : ")
     if choose == "0":
         main.main()
     elif choose == "1":
-        list_dividend()
+        list_dividend_2020()
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)
         home()
 
 
-def list_dividend():
+def list_dividend_2020():
     results = database.select()
     if len(results) > 0:
         for result in results:
@@ -34,7 +34,7 @@ def list_dividend():
             if dividend_price == "-":
                 dividend_date = "?"
                 dividend_price = soup.find('td', class_="c-table__cell c-table__cell--dotted c-table__cell--inherit-height c-table__cell--align-top / u-text-left u-text-right u-ellipsis").text.replace(" ", "").replace("\n", "")
-            print("- {n}  Prix: {dp}; Date: {dd}".format(n=result[1], dp=dividend_price, dd=dividend_date))
+            print("{n} -  Prix: {dp}; Date: {dd}".format(n=result[1], dp=dividend_price, dd=dividend_date))
         time.sleep(2)
         home()
     else:

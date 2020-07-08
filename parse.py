@@ -35,8 +35,8 @@ def add_society():
     req = requests.get(url)
     soup = BeautifulSoup(req.content, 'html.parser')
     name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
-    database.insert_into("company", ("name", "code"), (name, code))
-    time.sleep(5)
+    database.insert_into_company(("name", "code"), (name, code))
+    time.sleep(2)
     home()
 
 
@@ -51,7 +51,7 @@ def delete_society():
         choose = int(choose)
         if 0 < choose <= len(results):
             database.delete("company", results[choose - 1])
-        time.sleep(3)
+        time.sleep(2)
         home()
     else:
         print("\nAucune Entreprise dans la liste")
@@ -87,7 +87,7 @@ def parse():
                 value = soup.find_all('span', class_="c-instrument c-instrument--last")[0].text
                 var = soup.find_all('span', class_="c-instrument c-instrument--variation")[0].text
                 print(name, value, var, volume, vol_var)
-            if not "9:29AM" > time_now > "5:40PM":
+            if "9:29AM" < time_now < "5:40PM":
                 print("Bourse fermée")
                 time.sleep(2)
                 home()
@@ -95,4 +95,4 @@ def parse():
     else:
         print("\nAucune Entreprise dans la liste")
         time.sleep(2)
-        home()
+        main.main()

@@ -24,23 +24,37 @@ def connection():
 
 def create_table_company(co):
     c = co.cursor()
-    c.execute("""CREATE TABLE IF NOT EXISTS company (
+    create = """CREATE TABLE IF NOT EXISTS company (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name varchar(255) NOT NULL UNIQUE,
             code varchar(255) NOT NULL UNIQUE
-        )""")
+        )"""
+    c.execute(create)
 
 
-def insert_into(table, column, value):
+def insert_into_company(column, value):
     try:
         conn = connection()
         c = conn.cursor()
-        sql = "INSERT INTO {t} {c} VALUES {v}".format(t=table, c=column, v=value)
+        sql = "INSERT INTO company {c} VALUES {v}".format(c=column, v=value)
         c.execute(sql)
+        print(sql)
         conn.commit()
-        print("Add Company Name: {n}; Code: {c} in table {t}".format(n=value[0], c=value[1], t=table))
+        print("Ajout Compagnie Nom: {n}; Code: {c}".format(n=value[0], c=value[1]))
     except Error as e:
         print("\nCompagnie déjà dans la liste !\n")
+
+
+def insert_into_dividend(column, value):
+    try:
+        conn = connection()
+        c = conn.cursor()
+        sql = "INSERT INTO dividend {c} VALUES {v}".format(c=column, v=value)
+        c.execute(sql)
+        conn.commit()
+        print("Ajout Dividende Compagnie Name: {n}".format(n=value[0]))
+    except Error as e:
+        print("\n{}\n".format(e))
 
 
 def delete(table, company):
@@ -72,3 +86,4 @@ if __name__ == '__main__':
     conn = connection()
     if conn is not None:
         create_table_company(conn)
+    conn.close()

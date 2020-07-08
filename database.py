@@ -16,6 +16,7 @@ def connection():
     conn = None
     try:
         conn = sqlite3.connect(data_name)
+        conn.execute('PRAGMA foreign_keys = 1')
         return conn
     except Error as e:
         print(e)
@@ -25,9 +26,9 @@ def connection():
 def create_table_company(co):
     c = co.cursor()
     create = """CREATE TABLE IF NOT EXISTS company (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name varchar(255) NOT NULL UNIQUE,
-            code varchar(255) NOT NULL UNIQUE
+            id INTEGER  PRIMARY KEY    AUTOINCREMENT,
+            name        VARCHAR(255)   NOT     NULL    UNIQUE,
+            code        VARCHAR(255)   NOT     NULL    UNIQUE
         )"""
     c.execute(create)
 
@@ -35,12 +36,12 @@ def create_table_company(co):
 def create_table_interest(co):
     c = co.cursor()
     create = """CREATE TABLE IF NOT EXISTS interest (
-            company_id INTEGER,
-            value float NOT NULL,
-            interest int NOT NULL,
-            years int,
+            company_id  INTEGER,
+            value       FLOAT   NOT NULL,
+            interest    INTEGER NOT NULL,
+            years       INTEGER NOT NULL,
             
-            FOREIGN KEY (company_id) REFERENCES company (id)
+            CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES company(id) ON DELETE CASCADE
         )"""
     c.execute(create)
 

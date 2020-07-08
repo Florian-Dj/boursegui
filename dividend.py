@@ -57,7 +57,7 @@ def dividend_now():
 def dividend_20(year):
     results = database.select()
     if len(results) > 0:
-        print("\t\t----- Dividendes 202{y} -----\n".format(y=year))
+        print("\t\t----- Dividendes 202{y} -----".format(y=year))
         for result in results:
             url = "https://www.boursorama.com/cours/" + result[2]
             req = requests.get(url)

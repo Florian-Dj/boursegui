@@ -33,9 +33,15 @@ def add_society():
     code = input("Code de la société a rajouter : ")
     url = "https://www.boursorama.com/cours/" + code
     req = requests.get(url)
-    soup = BeautifulSoup(req.content, 'html.parser')
-    name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
-    database.insert_into_company(("name", "code"), (name, code))
+    if "cours" in req.url:
+        soup = BeautifulSoup(req.content, 'html.parser')
+        name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
+        sql = """INSERT INTO company ('name', 'code') VALUES ('{n}', '{c}')""".format(n=name, c=code)
+        test = database.insert_data(sql)
+        if test == "ok":
+            print("Ajout Compagnie Nom: {n}; Code: {c}".format(n=name, c=code))
+    else:
+        print("Code Société Erreur")
     time.sleep(2)
     home()
 
@@ -89,7 +95,8 @@ def parse():
                 vol_var = soup.find_all('li', class_="c-list-info__item--small-gutter")[2].text.replace(" ", "").split("\n")[3]
                 value = soup.find_all('span', class_="c-instrument c-instrument--last")[0].text
                 var = soup.find_all('span', class_="c-instrument c-instrument--variation")[0].text
-                print("\t\t{n}\n Action : {val}\t{var}\n Volume : {vo}\t{vov}".format(n=name, val=value, var=var, vo=volume, vov=vol_var))
+                print("\t\t{n}\nAction : {val}\t{var}\nVolume : {vo}\t{vov}"
+                      .format(n=name, val=value, var=var, vo=volume, vov=vol_var))
                 print()
             if "9:29AM" < time_now < "5:40PM":
                 print("Bourse fermée")

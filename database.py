@@ -38,23 +38,10 @@ def insert_into_company(column, value):
         c = conn.cursor()
         sql = "INSERT INTO company {c} VALUES {v}".format(c=column, v=value)
         c.execute(sql)
-        print(sql)
         conn.commit()
         print("Ajout Compagnie Nom: {n}; Code: {c}".format(n=value[0], c=value[1]))
     except Error as e:
         print("\nCompagnie déjà dans la liste !\n")
-
-
-def insert_into_dividend(column, value):
-    try:
-        conn = connection()
-        c = conn.cursor()
-        sql = "INSERT INTO dividend {c} VALUES {v}".format(c=column, v=value)
-        c.execute(sql)
-        conn.commit()
-        print("Ajout Dividende Compagnie Name: {n}".format(n=value[0]))
-    except Error as e:
-        print("\n{}\n".format(e))
 
 
 def delete(table, company):

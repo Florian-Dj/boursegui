@@ -78,7 +78,7 @@ def parse():
         time_now = datetime.datetime.now().strftime("%H:%M:%S")
         while True:
             print()
-            print("----- {t} -----".format(t=time_now))
+            print("--- {t} ---".format(t=datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
             print()
             for result in results:
                 url = "https://www.boursorama.com/cours/" + result[2]

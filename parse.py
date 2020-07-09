@@ -47,7 +47,8 @@ def add_society():
 
 
 def delete_society():
-    results = database.select()
+    sql = "SELECT * FROM company"
+    results = database.select(sql)
     if len(results) > 0:
         i = 1
         for result in results:

@@ -32,58 +32,52 @@ def home():
         home()
 
 
-def parse_dividend(year, *param):
-    sql = "SELECT * FROM company"
-    results = database.select(sql)
-    if len(results) > 0:
-        for result in results:
-            url = "https://www.boursorama.com/cours/" + result[2]
-            req = requests.get(url)
-            soup = BeautifulSoup(req.content, 'html.parser')
-            dividend_date = soup.find_all('li', class_="c-list-info__item c-list-info__item--fixed-width")[1].text.replace(" ", "").split("\n")[3].split(".")
-            dividend_date = "20{}-{}-{}".format(dividend_date[2], dividend_date[1], dividend_date[0])
-            if year == 2020:
-                value_div = soup.find('li', class_="c-list-info__item c-list-info__item--fixed-width").text.replace(" ", "").split("\n")[3]
-                if value_div == "-":
-                    value_div = soup.find('td', class_="c-table__cell c-table__cell--dotted c-table__cell--inherit-height c-table__cell--align-top / u-text-left u-text-right u-ellipsis").text.replace(" ", "").replace("\n", "")
-            else:
-                if year == 2021:
-                    nb = 1
-                elif year == 2022:
-                    nb = 2
-                value_div = soup.find_all('td', class_="c-table__cell c-table__cell--dotted c-table__cell--inherit-height c-table__cell--align-top / u-text-left u-text-right u-ellipsis")[nb].text.replace(" ", "").replace("\n", "")
-            print("{n} -  Valeur: {v}; Date: {dd}".format(n=result[1], v=value_div, dd=dividend_date))
-            if param:
-                sql = """UPDATE interest SET value = {}, date_div = '{}', date_update = '{}' WHERE interest_id = {}"""\
-                    .format(value_div[:-3], dividend_date, param[0], param[1])
-            else:
-                sql = """INSERT INTO interest ('company_id', 'value', 'years', date_div)
-                            VALUES ({}, {}, {}, '{}')""".format(result[0], value_div[:-3], year, dividend_date)
-            database.insert_data(sql)
-        time.sleep(2)
-        home()
+def parse_dividend(year, result, *param):
+    url = "https://www.boursorama.com/cours/" + result[2]
+    req = requests.get(url)
+    soup = BeautifulSoup(req.content, 'html.parser')
+    name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
+    dividend_date = soup.find_all('li', class_="c-list-info__item c-list-info__item--fixed-width")[1].text.replace(" ", "").split("\n")[3].split(".")
+    dividend_date = "20{}-{}-{}".format(dividend_date[2], dividend_date[1], dividend_date[0])
+    if year == 2020:
+        value_div = soup.find('li', class_="c-list-info__item c-list-info__item--fixed-width").text.replace(" ", "").split("\n")[3]
+        if value_div == "-":
+            value_div = soup.find('td', class_="c-table__cell c-table__cell--dotted c-table__cell--inherit-height c-table__cell--align-top / u-text-left u-text-right u-ellipsis").text.replace(" ", "").replace("\n", "")
     else:
-        print("\nAucune Entreprise dans la liste")
-        time.sleep(2)
-        home()
+        if year == 2021:
+            nb = 1
+        elif year == 2022:
+            nb = 2
+        value_div = soup.find_all('td', class_="c-table__cell c-table__cell--dotted c-table__cell--inherit-height c-table__cell--align-top / u-text-left u-text-right u-ellipsis")[nb].text.replace(" ", "").replace("\n", "")
+    print("{n} -  Valeur: {v}; Date: {dd}".format(n=name, v=value_div, dd=dividend_date))
+    if param:
+        sql = """UPDATE interest SET value = {}, date_div = '{}', date_update = '{}' WHERE interest_id = {}"""\
+            .format(value_div[:-3], dividend_date, param[0], result[1])
+    else:
+        sql = """INSERT INTO interest ('company_id', 'value', 'years', date_div)
+                    VALUES ({}, {}, {}, '{}')""".format(result[0], value_div[:-3], year, dividend_date)
+    database.insert_data(sql)
 
 
 def check(year):
-    sql = """SELECT interest_id, name, value, date_div, date_update
-                FROM company
-                INNER JOIN interest
-                ON company.id = interest.company_id
-                WHERE years = {y}""".format(y=year)
+    sql = """SELECT * FROM company"""
     results = database.select(sql)
-    if len(results) > 0:
-        date = datetime.datetime.today()
-        for result in results:
-            date_div = datetime.datetime.strptime(result[4], "%Y-%m-%d")
+    for result in results:
+        sql = """SELECT name, interest_id, code, value, date_div, date_update
+                    FROM interest
+                    INNER JOIN company
+                    ON company.id = interest.company_id
+                    WHERE years = {y} AND name = '{n}'""".format(y=year, n=result[1])
+        req = database.select(sql)
+        if req:
+            req = req[0]
+            date = datetime.datetime.today()
+            date_div = datetime.datetime.strptime(req[4], "%Y-%m-%d")
             if date_div + datetime.timedelta(days=7) < date:
-                parse_dividend(year, date.strftime("%Y-%m-%d"), result[0])
-                break
-            print("{} - Valeur: {}; Date: {}".format(result[1], result[2], result[3]))
-        time.sleep(2)
-        home()
-    else:
-        parse_dividend(year)
+                parse_dividend(year, req, date.strftime("%Y-%m-%d"))
+            else:
+                print("{} - Valeur: {}; Date: {}".format(req[0], req[3], req[4]))
+        else:
+            parse_dividend(year, result)
+    time.sleep(2)
+    home()

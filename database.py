@@ -39,7 +39,7 @@ def create_table_interest(co):
             company_id  INTEGER,
             value       FLOAT   NOT NULL,
             years       INTEGER NOT NULL,
-            date_div    DATE    DEFAULT NULL,
+            date_div    DATE    DEFAULT CURRENT_DATE,
             date_update DATE    DEFAULT CURRENT_DATE,
             
             CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES company(id) ON DELETE CASCADE

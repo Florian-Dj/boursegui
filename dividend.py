@@ -42,7 +42,6 @@ def parse_dividend(year):
             soup = BeautifulSoup(req.content, 'html.parser')
             dividend_date = soup.find_all('li', class_="c-list-info__item c-list-info__item--fixed-width")[1].text.replace(" ", "").split("\n")[3].split(".")
             dividend_date = "20{}-{}-{}".format(dividend_date[2], dividend_date[1], dividend_date[0])
-            print(dividend_date)
             if year == 2020:
                 value_div = soup.find('li', class_="c-list-info__item c-list-info__item--fixed-width").text.replace(" ", "").split("\n")[3]
                 if value_div == "-":
@@ -54,8 +53,7 @@ def parse_dividend(year):
                     nb = 2
                 value_div = soup.find_all('td', class_="c-table__cell c-table__cell--dotted c-table__cell--inherit-height c-table__cell--align-top / u-text-left u-text-right u-ellipsis")[nb].text.replace(" ", "").replace("\n", "")
             print("{n} -  Valeur: {v}; Date: {dd}".format(n=result[1], v=value_div, dd=dividend_date))
-            print(result[0], value_div[:-3], year, dividend_date)
-            sql = "INSERT INTO interest ('company_id', 'value', 'years', 'date_div') VALUES ({}, {}, {}, {})"\
+            sql = "INSERT INTO interest ('company_id', 'value', 'years', date_div) VALUES ({}, {}, {}, '{}')"\
                 .format(result[0], value_div[:-3], year, dividend_date)
             database.insert_data(sql)
         time.sleep(2)
@@ -67,12 +65,17 @@ def parse_dividend(year):
 
 
 def check(year):
-    # print(datetime.datetime.now().strftime("%Y-%m-%d"))
-    sql = "SELECT name, value, date_div FROM company INNER JOIN interest ON company.id = interest.company_id WHERE years = {y}".format(y=year)
+    # print(datetime.date.today())
+    sql = """SELECT name, value, date_div
+                FROM company
+                INNER JOIN interest
+                ON company.id = interest.company_id
+                WHERE years = {y}"""\
+        .format(y=year)
     results = database.select(sql)
     if len(results) > 0:
         for result in results:
-            print("Nom: {}; Value: {}; Date: {}".format(result[0], result[1], result[3]))
+            print("{} - Valeur: {}; Date: {}".format(result[0], result[1], result[2]))
         time.sleep(2)
         home()
     else:

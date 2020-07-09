@@ -25,7 +25,7 @@ def home():
     elif choose == "3":
         check(2022)
     elif choose == "4":
-        print("Dividende d'une société")
+        check_company()
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)
@@ -81,3 +81,35 @@ def check(year):
             parse_dividend(year, result)
     time.sleep(2)
     home()
+
+
+def check_company():
+    sql = """SELECT * FROM company"""
+    results = database.select(sql)
+    if len(results) > 0:
+        i = 1
+        for result in results:
+            print("{} - Nom: {}; Code: {}".format(i, result[1], result[2]))
+            i += 1
+        choose = input("\nQuelle société voulez-vous voir les dividendes ? ")
+        choose = int(choose)
+        if 0 < choose <= len(results):
+            print("\n----- Dividend {} -----".format(results[choose-1][1]))
+            sql = """SELECT name, value, date_div, years
+                        FROM interest
+                        INNER JOIN company
+                        ON company.id = interest.company_id
+                        WHERE name = '{n}'""".format(n=results[choose-1][1])
+            req = database.select(sql)
+            if req:
+                for dividend in req:
+                    print("{} - Valeur: {}".format(dividend[3], dividend[1]))
+            else:
+                parse_dividend(2020, results[choose-1])
+                parse_dividend(2021, results[choose-1])
+                parse_dividend(2022, results[choose-1])
+    else:
+        print("\nAucune Entreprise dans la liste")
+        time.sleep(2)
+        home()
+

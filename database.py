@@ -26,9 +26,9 @@ def connection():
 def create_table_company(co):
     c = co.cursor()
     create = """CREATE TABLE IF NOT EXISTS company (
-            id INTEGER  PRIMARY KEY    AUTOINCREMENT,
-            name        VARCHAR(255)   NOT     NULL    UNIQUE,
-            code        VARCHAR(255)   NOT     NULL    UNIQUE
+            id      INTEGER        PRIMARY KEY    AUTOINCREMENT,
+            name    VARCHAR(255)   NOT     NULL    UNIQUE,
+            code    VARCHAR(255)   NOT     NULL    UNIQUE
         )"""
     c.execute(create)
 
@@ -36,6 +36,7 @@ def create_table_company(co):
 def create_table_interest(co):
     c = co.cursor()
     create = """CREATE TABLE IF NOT EXISTS interest (
+            interest_id INTEGER PRIMARY KEY AUTOINCREMENT,
             company_id  INTEGER,
             value       FLOAT   NOT NULL,
             years       INTEGER NOT NULL,

@@ -65,8 +65,7 @@ def parse_dividend(year):
 
 
 def check(year):
-    # print(datetime.date.today())
-    sql = """SELECT name, value, date_div
+    sql = """SELECT name, value, date_div, date_update
                 FROM company
                 INNER JOIN interest
                 ON company.id = interest.company_id
@@ -74,7 +73,10 @@ def check(year):
         .format(y=year)
     results = database.select(sql)
     if len(results) > 0:
+        date = datetime.date.today()
+        print(date)
         for result in results:
+            print(result[3])
             print("{} - Valeur: {}; Date: {}".format(result[0], result[1], result[2]))
         time.sleep(2)
         home()

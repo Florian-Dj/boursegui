@@ -8,7 +8,7 @@ import dividend
 def main():
     print("""
     1 - Run
-    2 - Société
+    2 - Ma liste
     3 - Dividende
     4 - Portefeuille
     0 - Quitter""")

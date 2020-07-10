@@ -71,19 +71,21 @@ def check(year):
     sql = """SELECT * FROM my_list"""
     results = database.select(sql)
     for result in results:
-        sql = """SELECT *
-                    FROM interest
-                    LEFT JOIN my_list ON my_list.id = interest.company_id
+        sql = """SELECT name, interest.value, interest.date_div, interest.date_update, company.value
+                    FROM my_list
+                    LEFT JOIN interest ON my_list.id = interest.company_id
+                    LEFT JOIN company ON my_list.id = company.company_id
                     WHERE years = {y} AND name = '{n}'""".format(y=year, n=result[1])
         req = database.select(sql)
         if req:
             req = req[0]
             date = datetime.datetime.today()
-            date_div = datetime.datetime.strptime(req[4], "%Y-%m-%d")
+            date_div = datetime.datetime.strptime(req[3], "%Y-%m-%d")
             if date_div + datetime.timedelta(days=7) < date:
                 parse_dividend(year, req, date.strftime("%Y-%m-%d"))
             else:
-                print("{} - Valeur: {}; Intêret: {}%; Date: {}".format(req[0], req[3], "?", req[4]))
+                interest = round(req[1] * 100 / req[4], 2)
+                print("{} - Valeur: {}; Intêret: {}%; Date: {}".format(req[0], req[1], interest, req[2]))
         else:
             parse_dividend(year, result)
     time.sleep(2)
@@ -98,9 +100,12 @@ def check_company():
         for result in results:
             print("{} - Nom: {}; Code: {}".format(i, result[1], result[2]))
             i += 1
+        print("0 - Retour")
         choose = input("\nQuelle société voulez-vous voir les dividendes ? ")
         choose = int(choose)
-        if 0 < choose <= len(results):
+        if choose == 0:
+            home()
+        elif 0 < choose <= len(results):
             print("\n-------- Dividend {} --------".format(results[choose-1][1]))
             sql = """SELECT name, company.value, interest.date_div, interest.years, interest.value
                         FROM my_list
@@ -121,6 +126,10 @@ def check_company():
                 parse_dividend(2022, results[choose-1])
                 time.sleep(2)
                 home()
+        else:
+            print("\nMerci de choisir un choix valide")
+            time.sleep(2)
+            check_company()
     else:
         print("\nAucune Entreprise dans la liste")
         time.sleep(2)

@@ -36,7 +36,7 @@ def add_society():
     if "cours" in req.url:
         soup = BeautifulSoup(req.content, 'html.parser')
         name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
-        sql = """INSERT INTO company ('name', 'code') VALUES ('{n}', '{c}')""".format(n=name, c=code)
+        sql = """INSERT INTO my_list ('name', 'code') VALUES ('{n}', '{c}')""".format(n=name, c=code)
         request = database.insert_data(sql)
         if request == "good":
             print("Ajout Compagnie Nom: {n}; Code: {c}".format(n=name, c=code))
@@ -67,7 +67,7 @@ def delete_society():
 
 
 def list_society():
-    sql = "SELECT * FROM company"
+    sql = "SELECT * FROM my_list"
     results = database.select(sql)
     if len(results) > 0:
         for result in results:
@@ -81,7 +81,7 @@ def list_society():
 
 
 def parse():
-    sql = "SELECT * FROM company"
+    sql = "SELECT * FROM my_list"
     results = database.select(sql)
     if len(results) > 0:
         time_now = datetime.datetime.now().strftime("%H:%M:%S")
@@ -94,10 +94,10 @@ def parse():
                 req = requests.get(url)
                 soup = BeautifulSoup(req.content, 'html.parser')
                 name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
-                volume = soup.find_all('span', class_="c-instrument c-instrument--totalvolume")[0].text.replace(" ", "")
-                vol_var = soup.find_all('li', class_="c-list-info__item--small-gutter")[2].text.replace(" ", "").split("\n")[3]
                 value = soup.find_all('span', class_="c-instrument c-instrument--last")[0].text
                 var = soup.find_all('span', class_="c-instrument c-instrument--variation")[0].text
+                volume = soup.find_all('span', class_="c-instrument c-instrument--totalvolume")[0].text.replace(" ", "")
+                vol_var = soup.find_all('li', class_="c-list-info__item--small-gutter")[2].text.replace(" ", "").split("\n")[3]
                 print("\t\t{n}\nAction : {val}\t{var}\nVolume : {vo}\t{vov}"
                       .format(n=name, val=value, var=var, vo=volume, vov=vol_var))
                 print()

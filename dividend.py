@@ -66,8 +66,8 @@ def check(year):
     for result in results:
         sql = """SELECT name, interest_id, code, value, date_div, date_update
                     FROM interest
-                    INNER JOIN company
-                    ON company.id = interest.company_id
+                    INNER JOIN my_list
+                    ON my_list.id = interest.company_id
                     WHERE years = {y} AND name = '{n}'""".format(y=year, n=result[1])
         req = database.select(sql)
         if req:
@@ -98,8 +98,8 @@ def check_company():
             print("\n----- Dividend {} -----".format(results[choose-1][1]))
             sql = """SELECT name, value, date_div, years
                         FROM interest
-                        INNER JOIN company
-                        ON company.id = interest.company_id
+                        INNER JOIN my_list
+                        ON my_list.id = interest.company_id
                         WHERE name = '{n}'""".format(n=results[choose-1][1])
             req = database.select(sql)
             print("Date: {}\t Action: {}".format(req[0][2], "?"))

@@ -23,9 +23,9 @@ def connection():
     return conn
 
 
-def create_table_company(co):
+def create_table_my_list(co):
     c = co.cursor()
-    create = """CREATE TABLE IF NOT EXISTS company (
+    create = """CREATE TABLE IF NOT EXISTS my_list (
             id      INTEGER        PRIMARY KEY    AUTOINCREMENT,
             name    VARCHAR(255)   NOT     NULL    UNIQUE,
             code    VARCHAR(255)   NOT     NULL    UNIQUE
@@ -43,7 +43,21 @@ def create_table_interest(co):
             date_div    DATE    DEFAULT CURRENT_DATE,
             date_update DATE    DEFAULT CURRENT_DATE,
             
-            CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES company(id) ON DELETE CASCADE
+            CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES my_list(id) ON DELETE CASCADE
+        )"""
+    c.execute(create)
+
+
+def create_table_company(co):
+    c = co.cursor()
+    create = """CREATE TABLE IF NOT EXISTS company (
+            company_id  INTEGER,
+            value   FLOAT   NOT NULL,
+            var     FLOAT   NOT NULL,
+            volume  INTEGER NOT NULL,
+            vol_var FLOAT   NOT NULL,
+            
+            CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES my_list(id) ON DELETE CASCADE
         )"""
     c.execute(create)
 
@@ -89,6 +103,7 @@ if __name__ == '__main__':
     create_data()
     conn = connection()
     if conn is not None:
-        create_table_company(conn)
+        create_table_my_list(conn)
         create_table_interest(conn)
+        create_table_company(conn)
     conn.close()

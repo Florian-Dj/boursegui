@@ -56,6 +56,7 @@ def create_table_company(co):
             var         VAR(255)    NOT NULL,
             volume      INTEGER     NOT NULL,
             vol_var     VAR(255)    NOT NULL,
+            date_update DATETIME    DEFAULT CURRENT_TIMESTAMP,
             
             CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES my_list(id) ON DELETE CASCADE
         )"""

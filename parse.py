@@ -86,7 +86,7 @@ def parse():
     if len(results) > 0:
         while True:
             time_now = datetime.datetime.now().strftime("%H:%M:%S")
-            datetime_now = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+            datetime_now = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
             print()
             print("--- {t} ---".format(t=datetime_now))
             print()
@@ -110,7 +110,8 @@ def parse():
                                 var = '{}',
                                 volume = {},
                                 vol_var = '{}',
-                                date_update = '{}'""".format(value, var, volume, vol_var, datetime_now)
+                                date_update = '{}'
+                            WHERE company_id = {}""".format(value, var, volume, vol_var, datetime_now, result[0])
                     database.insert_data(sql)
                 print("\t\t{n}\nAction : {val}\t{var}\nVolume : {vo}\t{vov}"
                       .format(n=name, val=value, var=var, vo=volume, vov=vol_var))

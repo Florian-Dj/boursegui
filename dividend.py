@@ -56,7 +56,7 @@ def parse_dividend(year, result, *param):
         value_div = soup.find_all('td', class_="c-table__cell c-table__cell--dotted c-table__cell--inherit-height"
                                                " c-table__cell--align-top / u-text-left u-text-right u-ellipsis")[nb]
         value_div = value_div.text.replace(" ", "").replace("\n", "")
-    print("{n} -  Valeur: {v}; Date: {dd}".format(n=name, v=value_div, dd=dividend_date))
+    print("{n} -  Valeur: {v}; Intêret: {i}%; Date: {dd}".format(n=name, v=value_div, i="?", dd=dividend_date))
     if param:
         sql = """UPDATE interest SET value = {}, date_div = '{}', date_update = '{}' WHERE interest_id = {}"""\
             .format(value_div[:-3], dividend_date, param[0], result[1])
@@ -68,13 +68,12 @@ def parse_dividend(year, result, *param):
 
 def check(year):
     print("\n-------- Dividend {} --------".format(year))
-    sql = """SELECT * FROM company"""
+    sql = """SELECT * FROM my_list"""
     results = database.select(sql)
     for result in results:
-        sql = """SELECT name, interest_id, code, value, date_div, date_update
+        sql = """SELECT *
                     FROM interest
-                    INNER JOIN my_list
-                    ON my_list.id = interest.company_id
+                    LEFT JOIN my_list ON my_list.id = interest.company_id
                     WHERE years = {y} AND name = '{n}'""".format(y=year, n=result[1])
         req = database.select(sql)
         if req:
@@ -84,7 +83,7 @@ def check(year):
             if date_div + datetime.timedelta(days=7) < date:
                 parse_dividend(year, req, date.strftime("%Y-%m-%d"))
             else:
-                print("{} - Valeur: {}; Date: {}".format(req[0], req[3], req[4]))
+                print("{} - Valeur: {}; Intêret: {}%; Date: {}".format(req[0], req[3], "?", req[4]))
         else:
             parse_dividend(year, result)
     time.sleep(2)
@@ -92,7 +91,7 @@ def check(year):
 
 
 def check_company():
-    sql = """SELECT * FROM company"""
+    sql = """SELECT * FROM my_list"""
     results = database.select(sql)
     if len(results) > 0:
         i = 1
@@ -102,17 +101,18 @@ def check_company():
         choose = input("\nQuelle société voulez-vous voir les dividendes ? ")
         choose = int(choose)
         if 0 < choose <= len(results):
-            print("\n----- Dividend {} -----".format(results[choose-1][1]))
-            sql = """SELECT name, value, date_div, years
-                        FROM interest
-                        INNER JOIN my_list
-                        ON my_list.id = interest.company_id
+            print("\n-------- Dividend {} --------".format(results[choose-1][1]))
+            sql = """SELECT name, company.value, interest.date_div, interest.years, interest.value
+                        FROM my_list
+                        LEFT JOIN interest ON my_list.id = interest.company_id
+                        LEFT JOIN company ON my_list.id = company.company_id
                         WHERE name = '{n}'""".format(n=results[choose-1][1])
             req = database.select(sql)
-            print("Date: {}\t Action: {}".format(req[0][2], "?"))
+            print("Date: {}\t Action: {}".format(req[0][2], req[0][1]))
             if req:
                 for dividend in req:
-                    print("{} - Valeur: {}; Intêret:{}".format(dividend[3], dividend[1], "?"))
+                    interest = round(dividend[4] * 100 / dividend[1], 2)
+                    print("{} - Valeur: {}; Intêret: {}%".format(dividend[3], dividend[4], interest))
                 time.sleep(2)
                 home()
             else:

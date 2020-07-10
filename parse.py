@@ -81,7 +81,7 @@ def list_society():
 
 
 def parse():
-    sql = "SELECT * FROM my_list"
+    sql = """SELECT * FROM my_list"""
     results = database.select(sql)
     if len(results) > 0:
         time_now = datetime.datetime.now().strftime("%H:%M:%S")
@@ -98,6 +98,13 @@ def parse():
                 var = soup.find_all('span', class_="c-instrument c-instrument--variation")[0].text
                 volume = soup.find_all('span', class_="c-instrument c-instrument--totalvolume")[0].text.replace(" ", "")
                 vol_var = soup.find_all('li', class_="c-list-info__item--small-gutter")[2].text.replace(" ", "").split("\n")[3]
+                sql = """INSERT INTO company (company_id, value, var, volume, vol_var) VALUES ({}, '{}', '{}', {}, '{}')"""\
+                    .format(result[0], value, var, volume, vol_var)
+                req = database.insert_data(sql)
+                if req == "update":
+                    sql = """UPDATE company SET value = '{}', var = '{}', volume = {}, vol_var = '{}'"""\
+                        .format(value, var, volume, vol_var)
+                    database.insert_data(sql)
                 print("\t\t{n}\nAction : {val}\t{var}\nVolume : {vo}\t{vov}"
                       .format(n=name, val=value, var=var, vo=volume, vov=vol_var))
                 print()

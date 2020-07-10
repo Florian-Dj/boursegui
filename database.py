@@ -51,11 +51,11 @@ def create_table_interest(co):
 def create_table_company(co):
     c = co.cursor()
     create = """CREATE TABLE IF NOT EXISTS company (
-            company_id  INTEGER,
-            value   FLOAT   NOT NULL,
-            var     FLOAT   NOT NULL,
-            volume  INTEGER NOT NULL,
-            vol_var FLOAT   NOT NULL,
+            company_id  INTEGER     UNIQUE,
+            value       FLOAT       NOT NULL,
+            var         VAR(255)    NOT NULL,
+            volume      INTEGER     NOT NULL,
+            vol_var     VAR(255)    NOT NULL,
             
             CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES my_list(id) ON DELETE CASCADE
         )"""
@@ -63,13 +63,15 @@ def create_table_company(co):
 
 
 def insert_data(sql):
+    conn = connection()
     try:
-        conn = connection()
         c = conn.cursor()
         c.execute(sql)
         conn.commit()
         conn.close()
         return "good"
+    except conn.IntegrityError:
+        return "update"
     except Error as e:
         print(e)
         print("\nCompagnie déjà dans la liste !\n")

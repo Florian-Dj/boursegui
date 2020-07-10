@@ -60,6 +60,7 @@ def parse_dividend(year, result, *param):
 
 
 def check(year):
+    print("\n-------- Dividend {} --------".format(year))
     sql = """SELECT * FROM company"""
     results = database.select(sql)
     for result in results:
@@ -101,13 +102,18 @@ def check_company():
                         ON company.id = interest.company_id
                         WHERE name = '{n}'""".format(n=results[choose-1][1])
             req = database.select(sql)
+            print("Date: {}\t Action: {}".format(req[0][2], "?"))
             if req:
                 for dividend in req:
-                    print("{} - Valeur: {}".format(dividend[3], dividend[1]))
+                    print("{} - Valeur: {}; Intêret:{}".format(dividend[3], dividend[1], "?"))
+                time.sleep(2)
+                home()
             else:
                 parse_dividend(2020, results[choose-1])
                 parse_dividend(2021, results[choose-1])
                 parse_dividend(2022, results[choose-1])
+                time.sleep(2)
+                home()
     else:
         print("\nAucune Entreprise dans la liste")
         time.sleep(2)

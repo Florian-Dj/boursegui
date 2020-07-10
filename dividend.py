@@ -40,6 +40,7 @@ def parse_dividend(year, result, *param):
     dividend_date = soup.find_all('li', class_="c-list-info__item c-list-info__item--fixed-width")[1]
     dividend_date = dividend_date.text.replace(" ", "").split("\n")[3].split(".")
     dividend_date = "20{}-{}-{}".format(dividend_date[2], dividend_date[1], dividend_date[0])
+    value = soup.find_all('span', class_="c-instrument c-instrument--last")[0].text
     if year == 2020:
         value_div = soup.find('li', class_="c-list-info__item c-list-info__item--fixed-width")
         value_div = value_div.text.replace(" ", "").split("\n")[3]
@@ -56,7 +57,8 @@ def parse_dividend(year, result, *param):
         value_div = soup.find_all('td', class_="c-table__cell c-table__cell--dotted c-table__cell--inherit-height"
                                                " c-table__cell--align-top / u-text-left u-text-right u-ellipsis")[nb]
         value_div = value_div.text.replace(" ", "").replace("\n", "")
-    print("{n} -  Valeur: {v}; Intêret: {i}%; Date: {dd}".format(n=name, v=value_div, i="?", dd=dividend_date))
+    interest = round(float(value_div[:-3]) * 100 / float(value), 2)
+    print("{n} -  Valeur: {v}; Intêret: {i}%; Date: {dd}".format(n=name, v=value_div[:-3], i=interest, dd=dividend_date))
     if param:
         sql = """UPDATE interest SET value = {}, date_div = '{}', date_update = '{}' WHERE interest_id = {}"""\
             .format(value_div[:-3], dividend_date, param[0], result[1])

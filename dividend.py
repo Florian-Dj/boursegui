@@ -37,18 +37,25 @@ def parse_dividend(year, result, *param):
     req = requests.get(url)
     soup = BeautifulSoup(req.content, 'html.parser')
     name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
-    dividend_date = soup.find_all('li', class_="c-list-info__item c-list-info__item--fixed-width")[1].text.replace(" ", "").split("\n")[3].split(".")
+    dividend_date = soup.find_all('li', class_="c-list-info__item c-list-info__item--fixed-width")[1]
+    dividend_date = dividend_date.text.replace(" ", "").split("\n")[3].split(".")
     dividend_date = "20{}-{}-{}".format(dividend_date[2], dividend_date[1], dividend_date[0])
     if year == 2020:
-        value_div = soup.find('li', class_="c-list-info__item c-list-info__item--fixed-width").text.replace(" ", "").split("\n")[3]
+        value_div = soup.find('li', class_="c-list-info__item c-list-info__item--fixed-width")
+        value_div = value_div.text.replace(" ", "").split("\n")[3]
         if value_div == "-":
-            value_div = soup.find('td', class_="c-table__cell c-table__cell--dotted c-table__cell--inherit-height c-table__cell--align-top / u-text-left u-text-right u-ellipsis").text.replace(" ", "").replace("\n", "")
+            value_div = soup.find('td', class_="c-table__cell c-table__cell--dotted c-table__cell--inherit-height"
+                                               " c-table__cell--align-top / u-text-left u-text-right u-ellipsis")
+            value_div = value_div.text.replace(" ", "").replace("\n", "")
     else:
+        nb = ""
         if year == 2021:
             nb = 1
         elif year == 2022:
             nb = 2
-        value_div = soup.find_all('td', class_="c-table__cell c-table__cell--dotted c-table__cell--inherit-height c-table__cell--align-top / u-text-left u-text-right u-ellipsis")[nb].text.replace(" ", "").replace("\n", "")
+        value_div = soup.find_all('td', class_="c-table__cell c-table__cell--dotted c-table__cell--inherit-height"
+                                               " c-table__cell--align-top / u-text-left u-text-right u-ellipsis")[nb]
+        value_div = value_div.text.replace(" ", "").replace("\n", "")
     print("{n} -  Valeur: {v}; Date: {dd}".format(n=name, v=value_div, dd=dividend_date))
     if param:
         sql = """UPDATE interest SET value = {}, date_div = '{}', date_update = '{}' WHERE interest_id = {}"""\
@@ -118,4 +125,3 @@ def check_company():
         print("\nAucune Entreprise dans la liste")
         time.sleep(2)
         home()
-

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import time
-import parse
+import my_list
 import dividend
 
 
@@ -16,9 +16,9 @@ def main():
     if choose == "0":
         exit()
     elif choose == "1":
-        parse.parse()
+        my_list.parse()
     elif choose == "2":
-        parse.home()
+        my_list.home()
     elif choose == "3":
         dividend.home()
     elif choose == "4":

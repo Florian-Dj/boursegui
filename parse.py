@@ -11,7 +11,7 @@ def parse():
     results = database.select(sql)
     time_now = datetime.datetime.now().strftime("%H:%M:%S")
     day = datetime.datetime.today().weekday()
-    if not results:
+    if day == 5 or day == 6 or "9:30AM" < time_now < "5:30PM":
         print("Bourse fermée")
     else:
         datetime_now = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
@@ -66,7 +66,6 @@ def company(company_id, value, var, volume, vol_var, datetime_now):
 
 
 def interest(company_id, dividend, date_div, datetime_now):
-    print(dividend)
     year = 2020
     i = 0
     while i <= 2:

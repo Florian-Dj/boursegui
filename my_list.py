@@ -47,15 +47,18 @@ def add_society():
 
 
 def delete_society():
-    sql = "SELECT * FROM company"
+    sql = "SELECT * FROM my_list"
     results = database.select(sql)
     if len(results) > 0:
         i = 1
         for result in results:
             print("{} - Name: {}; Code: {}".format(i, result[1], result[2]))
             i += 1
+        print("0 - Retour")
         choose = input("Quelle société voulez-vous enlever ? ")
         choose = int(choose)
+        if choose == 0:
+            home()
         if 0 < choose <= len(results):
             database.delete("company", results[choose - 1])
         time.sleep(2)
@@ -78,50 +81,3 @@ def list_society():
         print("\nAucune Entreprise dans la liste")
         time.sleep(2)
         home()
-
-
-def parse():
-    sql = """SELECT * FROM my_list"""
-    results = database.select(sql)
-    if len(results) > 0:
-        while True:
-            time_now = datetime.datetime.now().strftime("%H:%M:%S")
-            datetime_now = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-            print()
-            print("--- {t} ---".format(t=datetime_now))
-            print()
-            for result in results:
-                url = "https://www.boursorama.com/cours/" + result[2]
-                req = requests.get(url)
-                soup = BeautifulSoup(req.content, 'html.parser')
-                name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
-                value = soup.find_all('span', class_="c-instrument c-instrument--last")[0].text
-                var = soup.find_all('span', class_="c-instrument c-instrument--variation")[0].text
-                volume = soup.find_all('span', class_="c-instrument c-instrument--totalvolume")[0].text.replace(" ", "")
-                vol_var = soup.find_all('li', class_="c-list-info__item--small-gutter")[2]
-                vol_var = vol_var.text.replace(" ", "").split("\n")[3]
-                sql = """INSERT INTO company (company_id, value, var, volume, vol_var, date_update)
-                        VALUES ({}, '{}', '{}', {}, '{}', '{}')"""\
-                    .format(result[0], value, var, volume, vol_var, datetime_now)
-                req = database.insert_data(sql)
-                if req == "update":
-                    sql = """UPDATE company 
-                            SET value = '{}',
-                                var = '{}',
-                                volume = {},
-                                vol_var = '{}',
-                                date_update = '{}'
-                            WHERE company_id = {}""".format(value, var, volume, vol_var, datetime_now, result[0])
-                    database.insert_data(sql)
-                print("\t\t{n}\nAction : {val}\t{var}\nVolume : {vo}\t{vov}"
-                      .format(n=name, val=value, var=var, vo=volume, vov=vol_var))
-                print()
-            if "9:29AM" < time_now < "5:40PM":
-                print("Bourse fermée")
-                time.sleep(2)
-                home()
-            time.sleep(60)
-    else:
-        print("\nAucune Entreprise dans la liste")
-        time.sleep(2)
-        main.main()

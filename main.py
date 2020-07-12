@@ -18,9 +18,7 @@ def main():
     if choose == "0":
         exit()
     elif choose == "1":
-        sql = """SELECT * FROM my_list"""
-        results = database.select(sql)
-        parse.parse(results)
+        parse.parse()
     elif choose == "2":
         my_list.home()
     elif choose == "3":

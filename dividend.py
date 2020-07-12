@@ -49,6 +49,7 @@ def check_company():
     results = database.select(sql)
     if len(results) > 0:
         i = 1
+        print()
         for result in results:
             print("{} - Nom: {}; Code: {}".format(i, result[1], result[2]))
             i += 1
@@ -70,7 +71,7 @@ def check_company():
                 interest = round(dividend[4] * 100 / dividend[1], 2)
                 print("{} - Valeur: {}; Intérêt: {}%".format(dividend[3], dividend[4], interest))
             time.sleep(2)
-            home()
+            check_company()
         else:
             print("\nMerci de choisir un choix valide")
             time.sleep(2)

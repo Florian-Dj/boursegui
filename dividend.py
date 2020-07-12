@@ -68,7 +68,7 @@ def check_company():
             print("Date: {}\t Action: {}€".format(req[0][2], req[0][1]))
             for dividend in req:
                 interest = round(dividend[4] * 100 / dividend[1], 2)
-                print("{} - Valeur: {}; Intêret: {}%".format(dividend[3], dividend[4], interest))
+                print("{} - Valeur: {}; Intérêt: {}%".format(dividend[3], dividend[4], interest))
             time.sleep(2)
             home()
         else:

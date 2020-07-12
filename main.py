@@ -3,6 +3,8 @@
 import time
 import my_list
 import dividend
+import parse
+import database
 
 
 def main():
@@ -16,7 +18,9 @@ def main():
     if choose == "0":
         exit()
     elif choose == "1":
-        my_list.parse()
+        sql = """SELECT * FROM my_list"""
+        results = database.select(sql)
+        parse.parse(results)
     elif choose == "2":
         my_list.home()
     elif choose == "3":

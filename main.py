@@ -3,6 +3,7 @@
 import time
 import my_list
 import dividend
+import database
 import parse
 
 
@@ -31,4 +32,5 @@ def main():
 
 
 if __name__ == '__main__':
+    database.create_data()
     main()

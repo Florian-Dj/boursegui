@@ -64,7 +64,7 @@ def create_table_company(co):
     c.execute(create)
 
 
-def insert_data(sql):
+def insert(sql):
     conn = connection()
     try:
         c = conn.cursor()

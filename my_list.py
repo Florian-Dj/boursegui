@@ -3,7 +3,6 @@
 import time
 import database
 import requests
-import datetime
 import main
 from bs4 import BeautifulSoup
 
@@ -30,14 +29,14 @@ def home():
 
 
 def add_society():
-    code = input("Code de la société a rajouter : ")
+    code = input("Code de la société à rajouter : ")
     url = "https://www.boursorama.com/cours/" + code
     req = requests.get(url)
     if "cours" in req.url:
         soup = BeautifulSoup(req.content, 'html.parser')
         name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
         sql = """INSERT INTO my_list ('name', 'code') VALUES ('{n}', '{c}')""".format(n=name, c=code)
-        request = database.insert_data(sql)
+        request = database.insert(sql)
         if request == "good":
             print("Ajout Compagnie Nom: {n}; Code: {c}".format(n=name, c=code))
     else:

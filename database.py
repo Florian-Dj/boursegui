@@ -10,6 +10,13 @@ data_name = "data.db"
 def create_data():
     if not os.path.exists(data_name):
         open(data_name, "w")
+    create_data()
+    conn = connection()
+    if conn is not None:
+        create_table_my_list(conn)
+        create_table_interest(conn)
+        create_table_company(conn)
+    conn.close()
 
 
 def connection():
@@ -101,13 +108,3 @@ def select(sql):
         return result
     except Error as e:
         print(e)
-
-
-if __name__ == '__main__':
-    create_data()
-    conn = connection()
-    if conn is not None:
-        create_table_my_list(conn)
-        create_table_interest(conn)
-        create_table_company(conn)
-    conn.close()

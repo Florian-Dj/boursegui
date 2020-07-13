@@ -29,8 +29,12 @@ def home():
 
 
 def add_society():
-    code = input("Code de la société à rajouter : ")
-    url = "https://www.boursorama.com/cours/" + code
+    code = input("Url ou Code de la société à rajouter : ")
+    if "boursorama.com" in code:
+        url = code
+        code = code.split("/")[4]
+    else:
+        url = "https://www.boursorama.com/cours/" + code
     req = requests.get(url)
     if "cours" in req.url:
         soup = BeautifulSoup(req.content, 'html.parser')
@@ -38,7 +42,7 @@ def add_society():
         sql = """INSERT INTO my_list ('name', 'code') VALUES ('{n}', '{c}')""".format(n=name, c=code)
         request = database.insert(sql)
         if request == "good":
-            print("Ajout Compagnie Nom: {n}; Code: {c}".format(n=name, c=code))
+            print("Ajout Compagnie\nNom: {n}; Code: {c}; Url: {u}".format(n=name, c=code, u=url))
     else:
         print("Code Société Erreur")
     time.sleep(2)
@@ -59,7 +63,7 @@ def delete_society():
         if choose == 0:
             home()
         if 0 < choose <= len(results):
-            database.delete("company", results[choose - 1])
+            database.delete("my_list", results[choose - 1])
         time.sleep(2)
         home()
     else:

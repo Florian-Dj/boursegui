@@ -43,7 +43,7 @@ def parse(run):
             day = datetime.datetime.today().weekday()
             time_now = datetime.datetime.now()
             morning = time_now.replace(hour=9, minute=00)
-            evening = time_now.replace(hour=17, minute=50)
+            evening = time_now.replace(hour=18, minute=40)
             if morning < time_now < evening and day != 5 and day != 6:
                 datetime_now = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
                 print()
@@ -86,6 +86,7 @@ def parse(run):
                 time.sleep(60)
             else:
                 print("Bourse fermée")
+                time.sleep(2)
                 break
             i += 1
     else:
@@ -109,13 +110,16 @@ def interest(company_id, dividend, date_div, datetime_now):
     year = 2020
     i = 0
     while i <= 2:
-        sql = """INSERT INTO interest (company_id, value, interest, years, date_div, date_update)
-                VALUES ({}, '{}', '{}', {}, '{}', '{}')"""\
-            .format(company_id, dividend[i], dividend[i+3], year, date_div, datetime_now)
-        req = database.insert(sql)
-        if req == "update":
-            sql = """UPDATE interest SET value = '{}', interest = {}, date_update = '{}'
+        sql = """SELECT * FROM interest WHERE company_id = '{}' AND years = {}""".format(company_id, year)
+        req = database.select(sql)
+        if req:
+            sql = """UPDATE interest SET value = '{}', interest = '{}', date_update = '{}'
                     WHERE company_id = {} AND years = {}""".format(dividend[i], dividend[i+3], datetime_now, company_id, year)
+            database.insert(sql)
+        else:
+            sql = """INSERT INTO interest (company_id, value, interest, years, date_div, date_update)
+                    VALUES ({}, '{}', '{}', {}, '{}', '{}')"""\
+                .format(company_id, dividend[i], dividend[i+3], year, date_div, datetime_now)
             database.insert(sql)
         year += 1
         i += 1

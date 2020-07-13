@@ -17,7 +17,7 @@ def main():
     if choose == "0":
         exit()
     elif choose == "1":
-        parse.parse(10)
+        parse.home()
     elif choose == "2":
         my_list.home()
     elif choose == "3":

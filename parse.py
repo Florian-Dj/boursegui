@@ -3,11 +3,38 @@
 import database
 import datetime
 import requests
+import main
 import time
 from bs4 import BeautifulSoup
 
 
-def parse(nb):
+def home():
+    print("""
+    1 - Run 1 fois
+    2 - Run x fois
+    3 - Jusqu'à la fermeture
+    0 - Retour""")
+    choose = input("\nAction que vous voulez effectuer : ")
+    if choose == "0":
+        main.main()
+    if choose == "1":
+        parse(1)
+    if choose == "2":
+        number_run()
+    if choose == "3":
+        parse(32768)
+
+
+def number_run():
+    choose = input("\nCombien de fois voulez-vous run ? : ")
+    if choose.isdigit():
+        parse(int(choose))
+    else:
+        print("Merci de rentrer un nombre correcte !")
+        number_run()
+
+
+def parse(run):
     sql = """SELECT * FROM my_list"""
     results = database.select(sql)
     day = datetime.datetime.today().weekday()
@@ -15,7 +42,7 @@ def parse(nb):
     morning = time_now.replace(hour=9, minute=00)
     evening = time_now.replace(hour=17, minute=40)
     i = 1
-    while i <= nb:
+    while i <= run:
         if morning < time_now < evening and day != 5 and day != 6:
             datetime_now = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
             print()
@@ -52,10 +79,10 @@ def parse(nb):
                     nb += 1
                 company(company_id, value, var, volume, vol_var, datetime_now)
                 interest(company_id, value_div, dividend_date, datetime_now)
-                print("\t\t{n}\nAction: {val}€\t{var}\nVolume: {vo}\t{vov}\nDividende: {vd}€\t{vp}\t{dd} "
-                      .format(n=name, val=value, var=var, vo=volume, vov=vol_var, vd=value_div[0], vp=value_div[3], dd=dividend_date))
+                print("\t\t{n}\nAction: {val}€\t{var}\nVolume: {vo}\t{vov}\nDividende: {vd}€\t{vp}"
+                      .format(n=name, val=value, var=var, vo=volume, vov=vol_var, vd=value_div[0], vp=value_div[3]))
                 print()
-            time.sleep(60)
+            time.sleep(6)
         else:
             print("Bourse fermée")
             break

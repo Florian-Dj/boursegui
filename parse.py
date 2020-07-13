@@ -87,6 +87,7 @@ def parse(run):
             print("Bourse fermée")
             break
         i += 1
+    main.main()
 
 
 def company(company_id, value, var, volume, vol_var, datetime_now):

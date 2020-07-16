@@ -2,6 +2,7 @@
 
 import database
 import main
+import parse
 import time
 
 
@@ -112,12 +113,19 @@ def delete_wallet(param):
 
 
 def list_wallet(param):
-    sql = """SELECT my_list.name, volume, value FROM real_wallet
-            LEFT JOIN my_list ON my_list.id = real_wallet.company_id"""
+    sql = """SELECT my_list.name, real_wallet.volume, real_wallet.value, company.value FROM real_wallet
+            LEFT JOIN my_list ON my_list.id = real_wallet.company_id
+            LEFT JOIN company ON my_list.id = company.company_id"""
     results = database.select(sql)
+    parse.parse(1)
+    total_win = 0
     for result in results:
         total = result[1] * result[2]
-        print("Nom: {}; Volume: {}; Value: {}€; Investissement: {}€".format(result[0], result[1], result[2], total))
+        gain = round((result[3] - result[2]) * result[1], 2)
+        print("Nom: {}; Volume: {}\nAchat: {}€; Investissement: {}€\nValeur: {}€; Gain: {}€\n"
+              .format(result[0], result[1], result[2], total, result[3], gain))
+        total_win += gain
+    print("Gain Total: {}€".format(total_win))
     time.sleep(2)
     check_return(param)
 

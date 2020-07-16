@@ -83,7 +83,8 @@ def parse(run):
                     print("\t\t{n}\nAction: {val}€\t{var}\nVolume: {vo}\t{vov}\nDividende: {vd}€\t{vp}"
                           .format(n=name, val=value, var=var, vo=volume, vov=vol_var, vd=value_div[0], vp=value_div[3]))
                     print()
-                time.sleep(60)
+                if run > 1:
+                    time.sleep(60)
             else:
                 print("Bourse fermée")
                 time.sleep(2)
@@ -92,7 +93,7 @@ def parse(run):
     else:
         print("\nAucune Entreprise dans la liste")
         time.sleep(2)
-    main.main()
+    # main.main()
 
 
 def company(company_id, value, var, volume, vol_var, datetime_now):

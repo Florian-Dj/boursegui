@@ -15,6 +15,7 @@ def create_data():
         create_table_my_list(conn)
         create_table_interest(conn)
         create_table_company(conn)
+        create_table_real_wallet(conn)
     conn.close()
 
 
@@ -65,6 +66,18 @@ def create_table_company(co):
             vol_var     VAR(255)    NOT NULL,
             date_update DATETIME    DEFAULT CURRENT_TIMESTAMP,
             
+            CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES my_list(id) ON DELETE CASCADE
+        )"""
+    c.execute(create)
+
+
+def create_table_real_wallet(co):
+    c = co.cursor()
+    create = """CREATE TABLE IF NOT EXISTS real_wallet (
+            company_id  INTEGER,
+            volume      INTEGER     NOT NULL,
+            value       FLOAT       NOT NULL,
+
             CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES my_list(id) ON DELETE CASCADE
         )"""
     c.execute(create)

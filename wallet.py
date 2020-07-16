@@ -99,7 +99,7 @@ def add_wallet(param):
     result = database.insert(sql)
     if result == "good":
         total = volume * value
-        print("Ajout Action\nNom: {n}; Volume: {vo}; Value: {va}; Total: {t}€"
+        print("Ajout Action\nNom: {n}; Volume: {vo}; Value: {va}€; Total: {t}€"
               .format(n=company[1], vo=volume, va=value, t=total))
     time.sleep(2)
     check_return(param)
@@ -112,10 +112,12 @@ def delete_wallet(param):
 
 
 def list_wallet(param):
-    sql = """SELECT * FROM real_wallet"""
+    sql = """SELECT my_list.name, volume, value FROM real_wallet
+            LEFT JOIN my_list ON my_list.id = real_wallet.company_id"""
     results = database.select(sql)
     for result in results:
-        print(result)
+        total = result[1] * result[2]
+        print("Nom: {}; Volume: {}; Value: {}€; Investissement: {}€".format(result[0], result[1], result[2], total))
     time.sleep(2)
     check_return(param)
 

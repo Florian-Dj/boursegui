@@ -10,7 +10,7 @@ import wallet
 
 def main():
     print("Boursorama Scrape")
-    print("By Mucral    V0.2\n\n")
+    print("By Mucral    V0.3\n\n")
     print("""
     1 - Run
     2 - Ma liste

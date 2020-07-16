@@ -46,8 +46,8 @@ def real():
 
 def virtual():
     print("""\nPortefeuille Vituel
-    1 - Ajouter Société
-    2 - Supprimer Société
+    1 - Ajouter Action
+    2 - Supprimer Action
     3 - Liste Portefeuille
     0 - Retour""")
     choose = input("\nAction que vous voulez effectuer : ")
@@ -95,6 +95,12 @@ def add_wallet(param):
         time.sleep(2)
         add_wallet(param)
     print(company[0], volume, value)
+    sql = """INSERT INTO real_wallet (company_id, volume, value) VALUES ({}, {}, {})""".format(company[0], volume, value)
+    result = database.insert(sql)
+    if result == "good":
+        total = volume * value
+        print("Ajout Action\nNom: {n}; Volume: {vo}; Value: {va}; Total: {t}€"
+              .format(n=company[1], vo=volume, va=value, t=total))
     time.sleep(2)
     check_return(param)
 
@@ -106,7 +112,10 @@ def delete_wallet(param):
 
 
 def list_wallet(param):
-    print("List")
+    sql = """SELECT * FROM real_wallet"""
+    results = database.select(sql)
+    for result in results:
+        print(result)
     time.sleep(2)
     check_return(param)
 

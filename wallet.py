@@ -66,25 +66,35 @@ def virtual():
 
 
 def add_wallet(param):
+    value = None
+    volume = None
     sql = "SELECT * FROM my_list"
     results = database.select(sql)
+    print()
     i = 1
     for result in results:
         print("{} - Name: {}".format(i, result[1]))
         i += 1
-    print("0 - Retour")
+    print("0 - Retour\n")
     company = input("Quelle société voulez-vous rajouter ?")
     company = int(company)
     if company == 0:
         home()
     if 0 < company <= len(results):
         company = results[company - 1]
-    volume = input("Combien avez-vous de titres ?")
-    if volume.isdigit():
-        volume = volume
-    else:
+    try:
+        volume = int(input("Combien avez-vous de titres ?"))
+    except ValueError:
         print("Merci de rentrer une valeur correcte")
-    print(company)
+        time.sleep(2)
+        add_wallet(param)
+    try:
+        value = float(input("Quel prix unitaire ?"))
+    except ValueError:
+        print("Merci de rentrer une valeur correcte")
+        time.sleep(2)
+        add_wallet(param)
+    print(company[0], volume, value)
     time.sleep(2)
     check_return(param)
 

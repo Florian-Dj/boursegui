@@ -5,6 +5,7 @@ import my_list
 import dividend
 import database
 import parse
+import wallet
 
 
 def main():
@@ -26,9 +27,8 @@ def main():
     elif choose == "3":
         dividend.home()
     elif choose == "4":
-        print("En cours de dév ...")
-        time.sleep(2)
-        main()
+        wallet.home()
+
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)

@@ -66,7 +66,25 @@ def virtual():
 
 
 def add_wallet(param):
-    print("Add")
+    sql = "SELECT * FROM my_list"
+    results = database.select(sql)
+    i = 1
+    for result in results:
+        print("{} - Name: {}".format(i, result[1]))
+        i += 1
+    print("0 - Retour")
+    company = input("Quelle société voulez-vous rajouter ?")
+    company = int(company)
+    if company == 0:
+        home()
+    if 0 < company <= len(results):
+        company = results[company - 1]
+    volume = input("Combien avez-vous de titres ?")
+    if volume.isdigit():
+        volume = volume
+    else:
+        print("Merci de rentrer une valeur correcte")
+    print(company)
     time.sleep(2)
     check_return(param)
 

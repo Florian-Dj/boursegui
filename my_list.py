@@ -59,13 +59,18 @@ def delete_society():
             i += 1
         print("0 - Retour")
         choose = input("Quelle société voulez-vous enlever ? ")
-        choose = int(choose)
-        if choose == 0:
+        if choose.isdigit():
+            choose = int(choose)
+            if choose == 0:
+                home()
+            if 0 < choose <= len(results):
+                database.delete("my_list", results[choose - 1])
+            time.sleep(2)
             home()
-        if 0 < choose <= len(results):
-            database.delete("my_list", results[choose - 1])
-        time.sleep(2)
-        home()
+        else:
+            print("Merci de rentrer une valeut correcte")
+            time.sleep(2)
+            delete_society()
     else:
         print("\nAucune Entreprise dans la liste")
         time.sleep(2)

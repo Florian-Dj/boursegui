@@ -8,6 +8,8 @@ import parse
 
 
 def main():
+    print("Boursorama Scrape")
+    print("By Mucral    V0.2\n\n")
     print("""
     1 - Run
     2 - Ma liste
@@ -24,7 +26,9 @@ def main():
     elif choose == "3":
         dividend.home()
     elif choose == "4":
-        print("Portefeuille")
+        print("En cours de dév ...")
+        time.sleep(2)
+        main()
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)

@@ -11,7 +11,6 @@ def create_data():
     if not os.path.exists(data_name):
         open(data_name, "w")
     conn = connection()
-    print(conn)
     if conn is not None:
         create_table_my_list(conn)
         create_table_interest(conn)

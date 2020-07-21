@@ -125,15 +125,25 @@ def list_wallet():
             LEFT JOIN company ON my_list.id = company.company_id"""
     results = database.select(sql)
     parse.parse(1)
-    total_win = 0
+    investment_total = 0
+    resale_total = 0
+    win_total = 0
     if results:
         for result in results:
-            total = result[1] * result[2]
+            investment = result[1] * result[2]
+            resale = round(result[1] * result[3], 2)
+            diff = round(result[3] - result[2], 2)
             gain = round((result[3] - result[2]) * result[1], 2)
-            print("Nom: {}; Volume: {}\nAchat: {}€; Investissement: {}€\nValeur: {}€; Gain: {}€\n"
-                  .format(result[0], result[1], result[2], total, result[3], gain))
-            total_win += gain
-        print("Gain Total: {}€".format(total_win))
+            percentage = round((resale / investment - 1) * 100, 2)
+            print("{} - {} Actions\nAchat: {}€; Investissement: {}€\nValeur: {}€; Revente: {}€\nDiff: {}€; Gain: {}€  {}%\n"
+                  .format(result[0], result[1], result[2], investment, result[3], resale, diff, gain, percentage))
+            investment_total += investment
+            resale_total += resale
+            win_total += gain
+        percentage = round((resale_total / investment_total - 1) * 100, 3)
+        print()
+        print("Investissement: {}€\nRevente: {}€\nGain: {}€  {}%\n"
+              .format(investment_total, resale_total, win_total, percentage))
     else:
         print("Pas d'actions")
     time.sleep(2)

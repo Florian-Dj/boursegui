@@ -13,7 +13,7 @@ def main():
     print("By Mucral\tV0.3\n")
     print("""
     1 - Run
-    2 - Ma liste
+    2 - Liste
     3 - Dividende
     4 - Portefeuille
     0 - Quitter""")

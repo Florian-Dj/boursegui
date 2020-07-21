@@ -30,7 +30,7 @@ def home():
 
 
 def dividend(year):
-    print("----- Dividende {} -----".format(year))
+    print("\n--- Dividende {} ---".format(year))
     sql = """SELECT my_list.name, interest.value, company.value
             FROM my_list
             LEFT JOIN interest ON my_list.id = interest.company_id
@@ -39,7 +39,7 @@ def dividend(year):
     results = database.select(sql)
     for result in results:
         interest = round(result[1] * 100 / result[2], 2)
-        print("{} - Valeur: {}€; Intêret: {}%".format(result[0], result[1], interest))
+        print("{}: {}€  {}%".format(result[0], result[1], interest))
     time.sleep(2)
     home()
 
@@ -51,7 +51,7 @@ def check_company():
         i = 1
         print()
         for result in results:
-            print("{} - Nom: {}; Code: {}".format(i, result[1], result[2]))
+            print("{} - {}".format(i, result[1]))
             i += 1
         print("0 - Retour")
         choose = input("\nQuelle société voulez-vous voir les dividendes ? ")
@@ -69,7 +69,7 @@ def check_company():
             print("Date: {}\t Action: {}€".format(req[0][2], req[0][1]))
             for dividend in req:
                 interest = round(dividend[4] * 100 / dividend[1], 2)
-                print("{} - Valeur: {}; Intérêt: {}%".format(dividend[3], dividend[4], interest))
+                print("{}: {}€  {}%".format(dividend[3], dividend[4], interest))
             time.sleep(2)
             check_company()
         else:

@@ -135,13 +135,16 @@ def list_wallet():
             diff = round(result[3] - result[2], 2)
             gain = round((result[3] - result[2]) * result[1], 2)
             percentage = round((resale / investment - 1) * 100, 2)
-            print("{} - {} Actions\nAchat: {}€; Investissement: {}€\nValeur: {}€; Revente: {}€\nDiff: {}€; Gain: {}€  {}%\n"
+            print("-------- {} ({}) --------\n"
+                  "Investissement: {}€  {}€\n"
+                  "Revente: {}€  {}€\n"
+                  "Gain: {}€  {}€  {}%\n"
                   .format(result[0], result[1], result[2], investment, result[3], resale, diff, gain, percentage))
             investment_total += investment
             resale_total += resale
             win_total += gain
         percentage = round((resale_total / investment_total - 1) * 100, 3)
-        print()
+        print("\n-------- Total --------")
         print("Investissement: {}€\nRevente: {}€\nGain: {}€  {}%\n"
               .format(investment_total, resale_total, win_total, percentage))
     else:

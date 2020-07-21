@@ -17,7 +17,7 @@ def home():
     elif choose == "1":
         real()
     elif choose == "2":
-        vitual()
+        virtual()
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)
@@ -26,9 +26,9 @@ def home():
 
 def real():
     print("""\nPortefeuille Réel
-    1 - Ajouter Société
-    2 - Supprimer Société
-    3 - Liste Portefeuille
+    1 - Ajouter Action
+    2 - Supprimer Action
+    3 - Liste Action
     0 - Retour""")
     choose = input("\nAction que vous voulez effectuer : ")
     if choose == "0":
@@ -122,6 +122,48 @@ def delete_wallet():
 def list_wallet():
     sql = """SELECT my_list.name, real_wallet.volume, real_wallet.value, company.value FROM real_wallet
             LEFT JOIN my_list ON my_list.id = real_wallet.company_id
+            LEFT JOIN company ON my_list.id = company.company_id"""
+    results = database.select(sql)
+    parse.parse(1)
+    total_win = 0
+    if results:
+        for result in results:
+            total = result[1] * result[2]
+            gain = round((result[3] - result[2]) * result[1], 2)
+            print("Nom: {}; Volume: {}\nAchat: {}€; Investissement: {}€\nValeur: {}€; Gain: {}€\n"
+                  .format(result[0], result[1], result[2], total, result[3], gain))
+            total_win += gain
+        print("Gain Total: {}€".format(total_win))
+    else:
+        print("Pas d'actions")
+    time.sleep(2)
+    real()
+
+
+def virtual():
+    print("""\nPortefeuille Virtuel
+    1 - Acheter Action
+    2 - Vendre Action
+    3 - Liste Action
+    0 - Retour""")
+    choose = input("\nAction que vous voulez effectuer : ")
+    if choose == "0":
+        home()
+    elif choose == "1":
+        buy_wallet()
+    elif choose == "2":
+        sell_wallet()
+    elif choose == "3":
+        list_virtual_wallet()
+    else:
+        print("\nMerci de choisir un choix valide")
+        time.sleep(2)
+        home()
+
+
+def list_virtual_wallet():
+    sql = """SELECT my_list.name, virtual_wallet.volume, virtual_wallet.value, company.value FROM virtual_wallet
+            LEFT JOIN my_list ON my_list.id = virtual_wallet.company_id
             LEFT JOIN company ON my_list.id = company.company_id"""
     results = database.select(sql)
     parse.parse(1)

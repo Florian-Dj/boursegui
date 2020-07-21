@@ -17,7 +17,7 @@ def home():
     elif choose == "1":
         real()
     elif choose == "2":
-        virtual()
+        vitual()
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)
@@ -34,39 +34,18 @@ def real():
     if choose == "0":
         home()
     elif choose == "1":
-        add_wallet("real")
+        add_wallet()
     elif choose == "2":
-        delete_wallet("real")
+        delete_wallet()
     elif choose == "3":
-        list_wallet("real")
+        list_wallet()
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)
         home()
 
 
-def virtual():
-    print("""\nPortefeuille Vituel
-    1 - Ajouter Action
-    2 - Supprimer Action
-    3 - Liste Portefeuille
-    0 - Retour""")
-    choose = input("\nAction que vous voulez effectuer : ")
-    if choose == "0":
-        home()
-    elif choose == "1":
-        add_wallet("virtual")
-    elif choose == "2":
-        delete_wallet("virtual")
-    elif choose == "3":
-        list_wallet("virtual")
-    else:
-        print("\nMerci de choisir un choix valide")
-        time.sleep(2)
-        home()
-
-
-def add_wallet(param):
+def add_wallet():
     value = None
     volume = None
     sql = "SELECT * FROM my_list"
@@ -88,35 +67,35 @@ def add_wallet(param):
     except ValueError:
         print("Merci de rentrer une valeur correcte")
         time.sleep(2)
-        add_wallet(param)
+        add_wallet()
     try:
         value = float(input("Quel prix unitaire ?"))
     except ValueError:
         print("Merci de rentrer une valeur correcte")
         time.sleep(2)
-        add_wallet(param)
+        add_wallet()
     print(company[0], volume, value)
-    sql = """INSERT INTO {}_wallet (company_id, volume, value) VALUES ({}, {}, {})"""\
-        .format(param, company[0], volume, value)
+    sql = """INSERT INTO real_wallet (company_id, volume, value) VALUES ({}, {}, {})"""\
+        .format(company[0], volume, value)
     result = database.insert(sql)
     if result == "good":
         total = volume * value
         print("Ajout Action\nNom: {n}; Volume: {vo}; Value: {va}€; Total: {t}€"
               .format(n=company[1], vo=volume, va=value, t=total))
     time.sleep(2)
-    check_return(param)
+    real()
 
 
-def delete_wallet(param):
+def delete_wallet():
     print("Delete")
     time.sleep(2)
-    check_return(param)
+    real()
 
 
-def list_wallet(param):
-    sql = """SELECT my_list.name, {}_wallet.volume, {}_wallet.value, company.value FROM {}_wallet
-            LEFT JOIN my_list ON my_list.id = {}_wallet.company_id
-            LEFT JOIN company ON my_list.id = company.company_id""".format(param, param, param, param)
+def list_wallet():
+    sql = """SELECT my_list.name, real_wallet.volume, real_wallet.value, company.value FROM real_wallet
+            LEFT JOIN my_list ON my_list.id = real_wallet.company_id
+            LEFT JOIN company ON my_list.id = company.company_id"""
     results = database.select(sql)
     parse.parse(1)
     total_win = 0
@@ -131,11 +110,4 @@ def list_wallet(param):
     else:
         print("Pas d'actions")
     time.sleep(2)
-    check_return(param)
-
-
-def check_return(param):
-    if param == "real":
-        real()
-    elif param == "virtual":
-        virtual()
+    real()

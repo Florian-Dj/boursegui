@@ -56,12 +56,13 @@ def add_wallet():
         print("{} - Name: {}".format(i, result[1]))
         i += 1
     print("0 - Retour\n")
-    company = input("Quelle société voulez-vous rajouter ?")
+    company = input("Quelle action voulez-vous rajouter ?")
     company = int(company)
     if company == 0:
         real()
     if 0 < company <= len(results):
         company = results[company - 1]
+        print(company)
     else:
         print("Merci de rentrer une valeur valable")
         time.sleep(2)
@@ -84,7 +85,7 @@ def add_wallet():
     result = database.insert(sql)
     if result == "good":
         total = volume * value
-        print("Ajout Action\nNom: {n}; Volume: {vo}; Value: {va}€; Total: {t}€"
+        print("Ajout Action\nNom: {n}; Volume: {vo}; Valeur: {va}€; Total: {t}€"
               .format(n=company[1], vo=volume, va=value, t=total))
     time.sleep(2)
     real()
@@ -105,6 +106,11 @@ def delete_wallet():
         real()
     if 0 < action <= len(results):
         action = results[action - 1]
+        sql = "DELETE FROM real_wallet WHERE company_id={i} AND volume={vo} AND value="\
+            .format(i=action[3], vo=action[2], va=action[1])
+        request = database.delete(sql)
+        if request == "delete":
+            print("Action {n}; Volume: {vo}; Valeur: {va}€ supprimé".format(n=action[0], vo=action[2], va=action[1]))
     else:
         print("Merci de rentrer une valeur valable")
         time.sleep(2)

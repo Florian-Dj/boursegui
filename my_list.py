@@ -64,7 +64,7 @@ def delete_society():
             if choose == 0:
                 home()
             if 0 < choose <= len(results):
-                sql = "DELETE FROM {t} WHERE id={i}".format(t="my_list", i=results[choose - 1][0])
+                sql = "DELETE FROM my_list WHERE id={i}".format(i=results[choose - 1][0])
                 request = database.delete(sql)
                 if request == "delete":
                     print("Société Supprimée")

@@ -86,7 +86,7 @@ def parse(run):
                 if run > 1:
                     time.sleep(60)
             else:
-                print("Bourse fermée")
+                print("\nBourse fermée\n")
                 time.sleep(2)
                 break
             i += 1

@@ -24,6 +24,7 @@ def home():
         home()
 
 
+# Real Wallet
 def real():
     print("""\nPortefeuille Réel
     1 - Ajouter Action
@@ -53,7 +54,7 @@ def add_wallet():
     print()
     i = 1
     for result in results:
-        print("{} - Name: {}".format(i, result[1]))
+        print("{} - {}".format(i, result[1]))
         i += 1
     print("0 - Retour\n")
     company = input("Quelle action voulez-vous rajouter ?")
@@ -79,13 +80,12 @@ def add_wallet():
         print("Merci de rentrer une valeur correcte")
         time.sleep(2)
         add_wallet()
-    print(company[0], volume, value)
     sql = """INSERT INTO real_wallet (company_id, volume, value) VALUES ({}, {}, {})"""\
         .format(company[0], volume, value)
     result = database.insert(sql)
     if result == "good":
         total = volume * value
-        print("Ajout Action\nNom: {n}; Volume: {vo}; Valeur: {va}€; Total: {t}€"
+        print("Ajout Action\n{n}; Volume: {vo}; Valeur: {va}€; Total: {t}€"
               .format(n=company[1], vo=volume, va=value, t=total))
     time.sleep(2)
     real()
@@ -124,11 +124,11 @@ def list_wallet():
             LEFT JOIN my_list ON my_list.id = real_wallet.company_id
             LEFT JOIN company ON my_list.id = company.company_id"""
     results = database.select(sql)
-    parse.parse(1)
-    investment_total = 0
-    resale_total = 0
-    win_total = 0
     if results:
+        parse.parse(1)
+        investment_total = 0
+        resale_total = 0
+        win_total = 0
         for result in results:
             investment = result[1] * result[2]
             resale = round(result[1] * result[3], 2)
@@ -153,6 +153,7 @@ def list_wallet():
     real()
 
 
+# Virtual Wallet
 def virtual():
     print("""\nPortefeuille Virtuel
     1 - Acheter Action
@@ -174,6 +175,52 @@ def virtual():
         home()
 
 
+def buy_wallet():
+    sql = "SELECT * FROM my_list"
+    results = database.select(sql)
+    i = 1
+    for result in results:
+        print("{i} - {n}".format(i=i, n=result[1]))
+        i += 1
+    print("0 - Retour\n")
+    action = input("Quelle action voulez-vous ajouter ?")
+    action = int(action)
+    if action == 0:
+        virtual()
+    if 0 < action <= len(results):
+        volume = 0
+        parse.parse(1)
+        action = results[action - 1]
+        sql = "SELECT * FROM company WHERE company_id={}".format(action[0])
+        request = database.select(sql)[0]
+        try:
+            print("\n--- {}  {}€ ---".format(action[1], request[1]))
+            volume = int(input("Combien voulez-vous de titres ?"))
+        except ValueError:
+            print("Merci de rentrer une valeur correcte")
+            time.sleep(2)
+            buy_wallet()
+        sql = """INSERT INTO virtual_wallet (company_id, volume, value) VALUES ({}, {}, {})""" \
+            .format(request[0], volume, request[1])
+        result = database.insert(sql)
+        if result == "good":
+            total = volume * request[1]
+            print("Achat Action : {n}; Volume: {vo}; Valeur: {va}€; Total: {t}€"
+                  .format(n=action[1], vo=volume, va=request[1], t=total))
+    else:
+        print("Merci de rentrer une valeur valable")
+        time.sleep(2)
+        buy_wallet()
+    time.sleep(2)
+    virtual()
+
+
+def sell_wallet():
+    print("Sell")
+    time.sleep(2)
+    virtual()
+
+
 def list_virtual_wallet():
     sql = """SELECT my_list.name, virtual_wallet.volume, virtual_wallet.value, company.value FROM virtual_wallet
             LEFT JOIN my_list ON my_list.id = virtual_wallet.company_id
@@ -183,13 +230,19 @@ def list_virtual_wallet():
     total_win = 0
     if results:
         for result in results:
-            total = result[1] * result[2]
+            investment = result[1] * result[2]
+            resale = round(result[1] * result[3], 2)
+            diff = round(result[3] - result[2], 2)
             gain = round((result[3] - result[2]) * result[1], 2)
-            print("Nom: {}; Volume: {}\nAchat: {}€; Investissement: {}€\nValeur: {}€; Gain: {}€\n"
-                  .format(result[0], result[1], result[2], total, result[3], gain))
+            percentage = round((resale / investment - 1) * 100, 2)
+            print("-------- {} ({}) --------\n"
+                  "Investissement: {}€  {}€\n"
+                  "Revente: {}€  {}€\n"
+                  "Gain: {}€  {}€  {}%\n"
+                  .format(result[0], result[1], result[2], investment, result[3], resale, diff, gain, percentage))
             total_win += gain
         print("Gain Total: {}€".format(total_win))
     else:
         print("Pas d'actions")
     time.sleep(2)
-    real()
+    virtual()

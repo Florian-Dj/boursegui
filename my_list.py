@@ -55,7 +55,7 @@ def delete_society():
     if len(results) > 0:
         i = 1
         for result in results:
-            print("{} - Name: {}; Code: {}".format(i, result[1], result[2]))
+            print("{} - {}; Code: {}".format(i, result[1], result[2]))
             i += 1
         print("0 - Retour")
         choose = input("Quelle société voulez-vous enlever ? ")
@@ -64,7 +64,10 @@ def delete_society():
             if choose == 0:
                 home()
             if 0 < choose <= len(results):
-                database.delete("my_list", results[choose - 1])
+                sql = "DELETE FROM {t} WHERE id={i}".format(t="my_list", i=results[choose - 1][0])
+                request = database.delete(sql)
+                if request == "delete":
+                    print("Société Supprimée")
             time.sleep(2)
             home()
         else:

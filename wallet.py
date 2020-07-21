@@ -59,9 +59,13 @@ def add_wallet():
     company = input("Quelle société voulez-vous rajouter ?")
     company = int(company)
     if company == 0:
-        home()
+        real()
     if 0 < company <= len(results):
         company = results[company - 1]
+    else:
+        print("Merci de rentrer une valeur valable")
+        time.sleep(2)
+        add_wallet()
     try:
         volume = int(input("Combien avez-vous de titres ?"))
     except ValueError:
@@ -87,7 +91,24 @@ def add_wallet():
 
 
 def delete_wallet():
-    print("Delete")
+    sql = """SELECT my_list.name, value, volume, my_list.id FROM real_wallet
+            LEFT JOIN my_list ON my_list.id = real_wallet.company_id"""
+    results = database.select(sql)
+    i = 1
+    for result in results:
+        print("{i} - {n} : {p}€ {v}".format(i=i, n=result[0], p=result[1], v=result[2]))
+        i += 1
+    print("0 - Retour\n")
+    action = input("Quelle action voulez-vous supprimer ?")
+    action = int(action)
+    if action == 0:
+        real()
+    if 0 < action <= len(results):
+        action = results[action - 1]
+    else:
+        print("Merci de rentrer une valeur valable")
+        time.sleep(2)
+        delete_wallet()
     time.sleep(2)
     real()
 

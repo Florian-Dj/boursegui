@@ -55,7 +55,8 @@ def delete_society():
     if len(results) > 0:
         i = 1
         for result in results:
-            print("{} - {}; Code: {}".format(i, result[1], result[2]))
+            url = "https://www.boursorama.com/cours/{}/".format(result[2])
+            print("{} - {}  {}".format(i, result[1], url))
             i += 1
         print("0 - Retour")
         choose = input("Quelle société voulez-vous enlever ? ")
@@ -85,7 +86,8 @@ def list_society():
     results = database.select(sql)
     if len(results) > 0:
         for result in results:
-            print("Nom: {}; Code: {}".format(result[1], result[2]))
+            url = "https://www.boursorama.com/cours/{}/".format(result[2])
+            print("- {}  {}".format(result[1], url))
         time.sleep(2)
         home()
     else:

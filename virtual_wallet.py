@@ -4,6 +4,7 @@ import wallet
 import database
 import parse
 import time
+import datetime
 
 
 def buy_wallet():
@@ -22,8 +23,9 @@ def buy_wallet():
         volume = 0
         parse.parse(1)
         action = results[action - 1]
-        sql = "SELECT * FROM company WHERE company_id={}".format(action[0])
+        sql = "SELECT company_id, value FROM company WHERE company_id={}".format(action[0])
         request = database.select(sql)[0]
+        print(request)
         try:
             print("\n{} : {}€".format(action[1], request[1]))
             volume = int(input("Combien voulez-vous de titres ?"))
@@ -31,8 +33,9 @@ def buy_wallet():
             print("Merci de rentrer une valeur correcte")
             time.sleep(2)
             buy_wallet()
-        sql = """INSERT INTO virtual_wallet (company_id, volume, value) VALUES ({}, {}, {})""" \
-            .format(request[0], volume, request[1])
+        datetime_now = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+        sql = """INSERT INTO virtual_wallet (company_id, volume, value, date_update) VALUES ({}, {}, {}, '{}')""" \
+            .format(request[0], volume, request[1], datetime_now)
         result = database.insert(sql)
         if result == "good":
             total = volume * request[1]
@@ -82,12 +85,14 @@ def list_wallet():
             LEFT JOIN my_list ON my_list.id = virtual_wallet.company_id"""
     results = database.select(sql)
     print()
-    for result in results:
-        print(result)
-        total = result[3] * result[2]
-        print("{} ({}) - {}€  {}€".format(result[5], result[2], result[3], total))
+    if results:
+        for result in results:
+            total = result[3] * result[2]
+            print("{} ({}) - {}€  {}€".format(result[6], result[2], result[3], total))
+    else:
+        print("Pas d'actions")
     time.sleep(2)
-    wallet.real()
+    wallet.virtual()
 
 
 def analysis_wallet():

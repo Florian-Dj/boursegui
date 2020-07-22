@@ -63,7 +63,6 @@ def add_wallet():
         real()
     if 0 < company <= len(results):
         company = results[company - 1]
-        print(company)
     else:
         print("Merci de rentrer une valeur valable")
         time.sleep(2)
@@ -92,7 +91,7 @@ def add_wallet():
 
 
 def delete_wallet():
-    sql = """SELECT my_list.name, value, volume, my_list.id FROM real_wallet
+    sql = """SELECT my_list.name, value, volume, my_list.id, real_id FROM real_wallet
             LEFT JOIN my_list ON my_list.id = real_wallet.company_id"""
     results = database.select(sql)
     i = 1
@@ -106,8 +105,9 @@ def delete_wallet():
         real()
     if 0 < action <= len(results):
         action = results[action - 1]
-        sql = "DELETE FROM real_wallet WHERE company_id={i} AND volume={vo} AND value="\
-            .format(i=action[3], vo=action[2], va=action[1])
+        print(action)
+        sql = "DELETE FROM real_wallet WHERE real_id={i}"\
+            .format(i=action[4])
         request = database.delete(sql)
         if request == "delete":
             print("Action {n}; Volume: {vo}; Valeur: {va}€ supprimé".format(n=action[0], vo=action[2], va=action[1]))
@@ -183,7 +183,7 @@ def buy_wallet():
         print("{i} - {n}".format(i=i, n=result[1]))
         i += 1
     print("0 - Retour\n")
-    action = input("Quelle action voulez-vous ajouter ?")
+    action = input("Quelle action voulez-vous acheter ?")
     action = int(action)
     if action == 0:
         virtual()
@@ -216,7 +216,20 @@ def buy_wallet():
 
 
 def sell_wallet():
-    print("Sell")
+    sql = """SELECT * FROM virtual_wallet
+            LEFT JOIN my_list ON my_list.id = virtual_wallet.company_id"""
+    results = database.select(sql)
+    i = 1
+    for result in results:
+        print("{i} - {n} : {p}€ {v}".format(i=i, n=result[4], p=result[2], v=result[1]))
+        i += 1
+    print("0 - Retour\n")
+    action = input("Quelle action voulez-vous vendre ?")
+    action = int(action)
+    if action == 0:
+        virtual()
+    if 0 < action <= len(results):
+        print("Delete")
     time.sleep(2)
     virtual()
 

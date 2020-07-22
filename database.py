@@ -75,6 +75,7 @@ def create_table_company(co):
 def create_table_real_wallet(co):
     c = co.cursor()
     create = """CREATE TABLE IF NOT EXISTS real_wallet (
+            real_id  INTEGER     PRIMARY KEY    AUTOINCREMENT,
             company_id  INTEGER,
             volume      INTEGER     NOT NULL,
             value       FLOAT       NOT NULL,
@@ -87,6 +88,7 @@ def create_table_real_wallet(co):
 def create_table_virtual_wallet(co):
     c = co.cursor()
     create = """CREATE TABLE IF NOT EXISTS virtual_wallet (
+            virtual_id  INTEGER     PRIMARY KEY    AUTOINCREMENT,
             company_id  INTEGER,
             volume      INTEGER     NOT NULL,
             value       FLOAT       NOT NULL,

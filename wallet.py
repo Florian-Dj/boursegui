@@ -27,9 +27,11 @@ def home():
 # Real Wallet
 def real():
     print("""\nPortefeuille Réel
-    1 - Ajouter Action
-    2 - Supprimer Action
-    3 - Liste Action
+    1 - Ajouter
+    2 - Supprimer
+    3 - Liste
+    4 - Analyse
+    5 - Historique
     0 - Retour""")
     choose = input("\nAction que vous voulez effectuer : ")
     if choose == "0":
@@ -40,6 +42,8 @@ def real():
         delete_wallet()
     elif choose == "3":
         list_wallet()
+    elif choose == "4":
+        analysis_wallet()
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)
@@ -118,7 +122,7 @@ def delete_wallet():
     real()
 
 
-def list_wallet():
+def analysis_wallet():
     sql = """SELECT my_list.name, real_wallet.volume, real_wallet.value, company.value FROM real_wallet
             LEFT JOIN my_list ON my_list.id = real_wallet.company_id
             LEFT JOIN company ON my_list.id = company.company_id"""

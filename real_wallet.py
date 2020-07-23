@@ -39,12 +39,12 @@ def buy_wallet():
         print("Merci de rentrer une valeur correcte")
         time.sleep(2)
         buy_wallet()
-    sql = """INSERT INTO real_wallet (company_id, volume, value, deal) VALUES ({}, {}, {}, {})"""\
+    sql = """INSERT INTO real_wallet (company_id, volume, value, deal) VALUES ({}, {}, {}, '{}')"""\
         .format(company[0], volume, value, "buy")
     result = database.insert(sql)
     if result == "good":
         total = volume * value
-        print("Ajout Action {n} ({vo})\n{va}€/u  Total: {t}€"
+        print("\nAjout Action {n} ({vo})\n{va}€/u  Total: {t}€"
               .format(n=company[1], vo=volume, va=value, t=total))
     time.sleep(2)
     wallet.real()
@@ -89,7 +89,7 @@ def list_wallet():
     if results:
         for result in results:
             total = result[3] * result[2]
-            print("{} ({}) - {}€  {}€".format(result[5], result[2], result[3], total))
+            print("{} ({}) - {}€  {}€".format(result[6], result[2], result[3], total))
     else:
         print("Pas d'actions")
     time.sleep(2)
@@ -133,6 +133,23 @@ def analysis_wallet():
 
 
 def history_wallet():
-    print("history")
+    sql = """SELECT my_list.name, real_wallet.value, real_wallet.volume, real_wallet.deal FROM real_wallet
+            LEFT JOIN my_list ON my_list.id = real_wallet.company_id"""
+    results = database.select(sql)
+    buy_list = []
+    sell_list = []
+    for result in results:
+        if result[3] == "buy":
+            buy_list.append(result)
+        elif result[3] == "sell":
+            sell_list.append(result)
+    if buy_list:
+        print("\n----- Achat Action -----")
+        for buy in buy_list:
+            print("{} ({}) - {}€/u  {}€".format(buy[0], buy[2], buy[1], buy[1] * buy[2]))
+    if sell_list:
+        print("\n----- Vente Action -----")
+        for sell in sell_list:
+            print(sell)
     time.sleep(2)
     wallet.real()

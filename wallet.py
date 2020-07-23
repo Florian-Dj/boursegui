@@ -27,7 +27,7 @@ def home():
 # Real Wallet
 def real():
     print("""\nPortefeuille Réel
-    1 - Action
+    1 - Transaction
     2 - Liste
     3 - Analyse
     4 - Historique

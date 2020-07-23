@@ -41,6 +41,8 @@ def real():
         real_wallet.list_wallet()
     elif choose == "3":
         real_wallet.analysis_wallet()
+    elif choose == "4":
+        real_wallet.history_wallet()
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)
@@ -49,18 +51,21 @@ def real():
 
 def submenu_real():
     print("""\nPortefeuille Réel
-    1 - Ajouter
-    2 - Supprimer
-    3 - Modifier
+    1 - Achat
+    2 - Vente
+    3 - Supprimer
+    4 - Modifier
     0 - Retour""")
     choose = input("\nAction que vous voulez effectuer : ")
     if choose == "0":
         real()
     elif choose == "1":
-        real_wallet.add_wallet()
+        real_wallet.buy_wallet()
     elif choose == "2":
-        real_wallet.delete_wallet()
+        real_wallet.sell_wallet()
     elif choose == "3":
+        real_wallet.delete_wallet()
+    elif choose == "4":
         print("Modifier")
     else:
         print("\nMerci de choisir un choix valide")
@@ -92,5 +97,3 @@ def virtual():
         print("\nMerci de choisir un choix valide")
         time.sleep(2)
         virtual()
-
-

@@ -6,7 +6,7 @@ import parse
 import time
 
 
-def add_wallet():
+def buy_wallet():
     value = None
     volume = None
     sql = "SELECT * FROM my_list"
@@ -20,31 +20,31 @@ def add_wallet():
     company = input("Quelle action voulez-vous rajouter ?")
     company = int(company)
     if company == 0:
-        wallet.real()
+        wallet.submenu_real()
     if 0 < company <= len(results):
         company = results[company - 1]
     else:
         print("Merci de rentrer une valeur valable")
         time.sleep(2)
-        add_wallet()
+        buy_wallet()
     try:
         volume = int(input("Combien avez-vous de titres ?"))
     except ValueError:
         print("Merci de rentrer une valeur correcte")
         time.sleep(2)
-        add_wallet()
+        buy_wallet()
     try:
         value = float(input("Quel prix unitaire ?"))
     except ValueError:
         print("Merci de rentrer une valeur correcte")
         time.sleep(2)
-        add_wallet()
-    sql = """INSERT INTO real_wallet (company_id, volume, value) VALUES ({}, {}, {})"""\
-        .format(company[0], volume, value)
+        buy_wallet()
+    sql = """INSERT INTO real_wallet (company_id, volume, value, deal) VALUES ({}, {}, {}, {})"""\
+        .format(company[0], volume, value, "buy")
     result = database.insert(sql)
     if result == "good":
         total = volume * value
-        print("Ajout Action\n{n}; Volume: {vo}; Valeur: {va}€; Total: {t}€"
+        print("Ajout Action {n} ({vo})\n{va}€/u  Total: {t}€"
               .format(n=company[1], vo=volume, va=value, t=total))
     time.sleep(2)
     wallet.real()
@@ -55,27 +55,30 @@ def delete_wallet():
             LEFT JOIN my_list ON my_list.id = real_wallet.company_id"""
     results = database.select(sql)
     i = 1
-    for result in results:
-        print("{i} - {n} : {p}€ {v}".format(i=i, n=result[0], p=result[1], v=result[2]))
-        i += 1
-    print("0 - Retour\n")
-    action = input("Quelle action voulez-vous supprimer ?")
-    action = int(action)
-    if action == 0:
-        wallet.real()
-    if 0 < action <= len(results):
-        action = results[action - 1]
-        sql = "DELETE FROM real_wallet WHERE real_id={i}"\
-            .format(i=action[4])
-        request = database.delete(sql)
-        if request == "delete":
-            print("----- {n} ({vo}) -----\nValeur: {va}€ supprimé".format(n=action[0], vo=action[2], va=action[1]))
+    if results:
+        for result in results:
+            print("{i} - {n} : {p}€ {v}".format(i=i, n=result[0], p=result[1], v=result[2]))
+            i += 1
+        print("0 - Retour\n")
+        action = input("Quelle action voulez-vous supprimer ?")
+        action = int(action)
+        if action == 0:
+            wallet.real()
+        if 0 < action <= len(results):
+            action = results[action - 1]
+            sql = "DELETE FROM real_wallet WHERE real_id={i}"\
+                .format(i=action[4])
+            request = database.delete(sql)
+            if request == "delete":
+                print("----- {n} ({vo}) -----\nValeur: {va}€ supprimé".format(n=action[0], vo=action[2], va=action[1]))
+        else:
+            print("Merci de rentrer une valeur valable")
+            time.sleep(2)
+            delete_wallet()
     else:
-        print("Merci de rentrer une valeur valable")
-        time.sleep(2)
-        delete_wallet()
+        print("Pas d'actions")
     time.sleep(2)
-    wallet.real()
+    wallet.submenu_real()
 
 
 def list_wallet():
@@ -83,9 +86,12 @@ def list_wallet():
             LEFT JOIN my_list ON my_list.id = real_wallet.company_id"""
     results = database.select(sql)
     print()
-    for result in results:
-        total = result[3] * result[2]
-        print("{} ({}) - {}€  {}€".format(result[5], result[2], result[3], total))
+    if results:
+        for result in results:
+            total = result[3] * result[2]
+            print("{} ({}) - {}€  {}€".format(result[5], result[2], result[3], total))
+    else:
+        print("Pas d'actions")
     time.sleep(2)
     wallet.real()
 
@@ -122,5 +128,11 @@ def analysis_wallet():
               .format(investment_total, resale_total, win_total, percentage))
     else:
         print("Pas d'actions")
+    time.sleep(2)
+    wallet.real()
+
+
+def history_wallet():
+    print("history")
     time.sleep(2)
     wallet.real()

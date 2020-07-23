@@ -17,7 +17,7 @@ def buy_wallet():
         print("{} - {}".format(i, result[1]))
         i += 1
     print("0 - Retour\n")
-    company = input("Quelle action voulez-vous rajouter ?")
+    company = input("Quelle action avez-vous acheté ?")
     company = int(company)
     if company == 0:
         wallet.submenu_real()
@@ -44,10 +44,59 @@ def buy_wallet():
     result = database.insert(sql)
     if result == "good":
         total = volume * value
-        print("\nAjout Action {n} ({vo})\n{va}€/u  Total: {t}€"
+        print("\nAchat {n} ({vo})\n{va}€/u  Total: {t}€"
               .format(n=company[1], vo=volume, va=value, t=total))
     time.sleep(2)
     wallet.real()
+
+
+def sell_wallet():
+    volume = 0
+    value = 0
+    sql = """SELECT my_list.name, real_wallet.value, real_wallet.volume, my_list.id FROM real_wallet
+            LEFT JOIN my_list ON my_list.id = real_wallet.company_id
+            WHERE deal = 'buy'"""
+    results = database.select(sql)
+    i = 1
+    print()
+    for result in results:
+        print("{} - {} ({})  {}€/u".format(i, result[0], result[2], result[1]))
+        i += 1
+    company = input("\nQuelle action avez-vous vendu ?")
+    company = int(company)
+    if company == 0:
+        wallet.submenu_real()
+    if 0 < company <= len(results):
+        company = results[company - 1]
+    else:
+        print("Merci de rentrer une valeur valable")
+        time.sleep(2)
+        sell_wallet()
+    try:
+        volume = int(input("Combien avez-vous vendu de titres ?"))
+        if volume > company[2]:
+            print("Vous n'avez pas assez de volume ({})".format(company[2]))
+            time.sleep(2)
+            sell_wallet()
+    except ValueError:
+        print("Merci de rentrer une valeur correcte")
+        time.sleep(2)
+        sell_wallet()
+    try:
+        value = float(input("Quel prix unitaire ?"))
+    except ValueError:
+        print("Merci de rentrer une valeur correcte")
+        time.sleep(2)
+        sell_wallet()
+    sql = """INSERT INTO real_wallet (company_id, volume, value, deal) VALUES ({}, {}, {}, '{}')"""\
+        .format(company[3], volume, value, "sell")
+    result = database.insert(sql)
+    if result == "good":
+        total = volume * value
+        print("\nVente {n} ({vo})\n{va}€/u  Total: {t}€"
+              .format(n=company[0], vo=volume, va=value, t=total))
+    time.sleep(2)
+    wallet.submenu_real()
 
 
 def delete_wallet():
@@ -150,6 +199,6 @@ def history_wallet():
     if sell_list:
         print("\n----- Vente Action -----")
         for sell in sell_list:
-            print(sell)
+            print("{} ({}) - {}€/u  {}€".format(sell[0], sell[2], sell[1], sell[1] * sell[2]))
     time.sleep(2)
     wallet.real()

@@ -59,42 +59,47 @@ def sell_wallet():
     results = database.select(sql)
     i = 1
     print()
-    for result in results:
-        print("{} - {} ({})  {}€/u".format(i, result[0], result[2], result[1]))
-        i += 1
-    company = input("\nQuelle action avez-vous vendu ?")
-    company = int(company)
-    if company == 0:
-        wallet.submenu_real()
-    if 0 < company <= len(results):
-        company = results[company - 1]
-    else:
-        print("Merci de rentrer une valeur valable")
-        time.sleep(2)
-        sell_wallet()
-    try:
-        volume = int(input("Combien avez-vous vendu de titres ?"))
-        if volume > company[2]:
-            print("Vous n'avez pas assez de volume ({})".format(company[2]))
+    if results:
+        for result in results:
+            print("{} - {} ({})  {}€/u".format(i, result[0], result[2], result[1]))
+            i += 1
+        company = input("\nQuelle action avez-vous vendu ?")
+        company = int(company)
+        if company == 0:
+            wallet.submenu_real()
+        if 0 < company <= len(results):
+            company = results[company - 1]
+        else:
+            print("Merci de rentrer une valeur valable")
             time.sleep(2)
             sell_wallet()
-    except ValueError:
-        print("Merci de rentrer une valeur correcte")
+        try:
+            volume = int(input("Combien avez-vous vendu de titres ?"))
+            if volume > company[2]:
+                print("Vous n'avez pas assez de volume ({})".format(company[2]))
+                time.sleep(2)
+                sell_wallet()
+        except ValueError:
+            print("Merci de rentrer une valeur correcte")
+            time.sleep(2)
+            sell_wallet()
+        try:
+            value = float(input("Quel prix unitaire ?"))
+        except ValueError:
+            print("Merci de rentrer une valeur correcte")
+            time.sleep(2)
+            sell_wallet()
+        sql = """INSERT INTO real_wallet (company_id, volume, value, deal) VALUES ({}, {}, {}, '{}')"""\
+            .format(company[3], volume, value, "sell")
+        result = database.insert(sql)
+        if result == "good":
+            total = volume * value
+            print("\nVente {n} ({vo})\n{va}€/u  Total: {t}€"
+                  .format(n=company[0], vo=volume, va=value, t=total))
         time.sleep(2)
-        sell_wallet()
-    try:
-        value = float(input("Quel prix unitaire ?"))
-    except ValueError:
-        print("Merci de rentrer une valeur correcte")
-        time.sleep(2)
-        sell_wallet()
-    sql = """INSERT INTO real_wallet (company_id, volume, value, deal) VALUES ({}, {}, {}, '{}')"""\
-        .format(company[3], volume, value, "sell")
-    result = database.insert(sql)
-    if result == "good":
-        total = volume * value
-        print("\nVente {n} ({vo})\n{va}€/u  Total: {t}€"
-              .format(n=company[0], vo=volume, va=value, t=total))
+        wallet.submenu_real()
+    else:
+        print("Pas d'actions")
     time.sleep(2)
     wallet.submenu_real()
 
@@ -103,6 +108,7 @@ def delete_wallet():
     sql = """SELECT my_list.name, value, volume, my_list.id, real_id FROM real_wallet
             LEFT JOIN my_list ON my_list.id = real_wallet.company_id"""
     results = database.select(sql)
+    print()
     i = 1
     if results:
         for result in results:
@@ -192,26 +198,32 @@ def history_wallet():
     results = database.select(sql)
     buy_list = []
     sell_list = []
-    for result in results:
-        if result[3] == "buy":
-            buy_list.append(result)
-        elif result[3] == "sell":
-            sell_list.append(result)
-    buy_total = 0
-    sell_total = 0
-    if buy_list:
-        print("\n----- Achat Action -----")
-        for buy in buy_list:
-            total = buy[1] * buy[2]
-            print("{} ({}) - {}€/u  {}€".format(buy[0], buy[2], buy[1], total))
-            buy_total += total
-    if sell_list:
-        print("\n----- Vente Action -----")
-        for sell in sell_list:
-            total = sell[1] * -sell[2]
-            print("{} ({}) - {}€/u  {}€".format(sell[0], -sell[2], sell[1], sell_total))
-            sell_total += total
-    print("\n----- Récap -----")
-    print("Achat: {}€\nVente: {}€\nGain: {}€".format(buy_total, sell_total, sell_total-buy_total))
+    print()
+    if results:
+        for result in results:
+            if result[3] == "buy":
+                buy_list.append(result)
+            elif result[3] == "sell":
+                sell_list.append(result)
+        buy_total = 0
+        sell_total = 0
+        if buy_list:
+            print("\n----- Achat Action -----")
+            for buy in buy_list:
+                total = buy[1] * buy[2]
+                print("{} ({}) - {}€/u  {}€".format(buy[0], buy[2], buy[1], total))
+                buy_total += total
+        if sell_list:
+            print("\n----- Vente Action -----")
+            for sell in sell_list:
+                total = sell[1] * -sell[2]
+                print("{} ({}) - {}€/u  {}€".format(sell[0], -sell[2], sell[1], sell_total))
+                sell_total += total
+        print("\n----- Récap -----")
+        print("Achat: {}€\nVente: {}€\nGain: {}€".format(buy_total, sell_total, sell_total-buy_total))
+        time.sleep(2)
+        wallet.real()
+    else:
+        print("Pas d'actions")
     time.sleep(2)
     wallet.real()

@@ -93,7 +93,7 @@ def create_table_virtual_wallet(co):
             company_id  INTEGER,
             volume      INTEGER     NOT NULL,
             value       FLOAT       NOT NULL,
-            date_update DATETIME    DEFAULT CURRENT_TIMESTAMP,
+            deal       VARCHAR(255) NOT NULL,
 
             CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES my_list(id) ON DELETE CASCADE
         )"""

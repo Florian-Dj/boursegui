@@ -29,6 +29,7 @@ def home():
 
 
 def add_society():
+    print()
     code = input("Url ou Code de la société à rajouter : ")
     if "boursorama.com" in code:
         url = code
@@ -42,7 +43,7 @@ def add_society():
         sql = """INSERT INTO my_list ('name', 'code') VALUES ('{n}', '{c}')""".format(n=name, c=code)
         request = database.insert(sql)
         if request == "good":
-            print("Ajout Compagnie\nNom: {n}; Code: {c}; Url: {u}".format(n=name, c=code, u=url))
+            print("\nAjout Compagnie\n{n} {u}".format(n=name, c=code, u=url))
     else:
         print("Code Société Erreur")
     time.sleep(2)
@@ -52,13 +53,14 @@ def add_society():
 def delete_society():
     sql = "SELECT * FROM my_list"
     results = database.select(sql)
+    print()
     if len(results) > 0:
         i = 1
         for result in results:
             url = "https://www.boursorama.com/cours/{}/".format(result[2])
             print("{} - {}  {}".format(i, result[1], url))
             i += 1
-        print("0 - Retour")
+        print("0 - Retour\n")
         choose = input("Quelle société voulez-vous enlever ? ")
         if choose.isdigit():
             choose = int(choose)
@@ -68,7 +70,7 @@ def delete_society():
                 sql = "DELETE FROM my_list WHERE id={i}".format(i=results[choose - 1][0])
                 request = database.delete(sql)
                 if request == "delete":
-                    print("Société Supprimée")
+                    print("Société Supprimée {}".format(results[choose - 1][1]))
             time.sleep(2)
             home()
         else:
@@ -84,6 +86,7 @@ def delete_society():
 def list_society():
     sql = "SELECT * FROM my_list"
     results = database.select(sql)
+    print()
     if len(results) > 0:
         for result in results:
             url = "https://www.boursorama.com/cours/{}/".format(result[2])

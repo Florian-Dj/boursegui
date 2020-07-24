@@ -3,6 +3,7 @@
 import time
 import main
 import database
+import parse
 
 
 def home():
@@ -30,6 +31,7 @@ def home():
 
 
 def dividend(year):
+    parse.parse(1, draw=False)
     print("\n--- Dividende {} ---".format(year))
     sql = """SELECT my_list.name, interest.value, company.value
             FROM my_list
@@ -45,6 +47,7 @@ def dividend(year):
 
 
 def check_company():
+    parse.parse(1, draw=False)
     sql = """SELECT * FROM my_list"""
     results = database.select(sql)
     if len(results) > 0:

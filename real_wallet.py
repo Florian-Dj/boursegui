@@ -140,7 +140,7 @@ def list_wallet():
         for result in results:
             if result[3] > 0:
                 total = result[1] * result[2]
-                print("{} ({}) - {}€  {}€".format(result[0], result[3], result[1], total))
+                print("{} ({}) - {}€/u  {}€".format(result[0], result[3], result[1], total))
     else:
         print("Pas d'actions")
     time.sleep(2)
@@ -166,8 +166,8 @@ def analysis_wallet():
                 gain = round((result[3] - result[2]) * result[1], 2)
                 percentage = round((resale / investment - 1) * 100, 2)
                 print("-------- {n} ({v}) --------\n"
-                      "Achat: {bu}€  {bt}€\n"
-                      "Revente: {su}€  {st}€\n"
+                      "Achat: {bu}€/u  {bt}€\n"
+                      "Revente: {su}€/u  {st}€\n"
                       "Gain: {gu}€  {gt}€  {p}%\n"
                       .format(n=result[0], v=result[1], bu=result[2], bt=investment, su=result[3], st=resale, gu=diff, gt=gain, p=percentage))
                 investment_total += investment
@@ -186,7 +186,8 @@ def analysis_wallet():
 
 
 def history_wallet():
-    sql = """SELECT my_list.name, real_wallet.value, real_wallet.volume, real_wallet.deal FROM real_wallet
+    sql = """SELECT my_list.name, real_wallet.value, real_wallet.volume, real_wallet.deal
+            FROM real_wallet
             LEFT JOIN my_list ON my_list.id = real_wallet.company_id"""
     results = database.select(sql)
     buy_list = []
@@ -196,13 +197,21 @@ def history_wallet():
             buy_list.append(result)
         elif result[3] == "sell":
             sell_list.append(result)
+    buy_total = 0
+    sell_total = 0
     if buy_list:
         print("\n----- Achat Action -----")
         for buy in buy_list:
-            print("{} ({}) - {}€/u  {}€".format(buy[0], buy[2], buy[1], buy[1] * buy[2]))
+            total = buy[1] * buy[2]
+            print("{} ({}) - {}€/u  {}€".format(buy[0], buy[2], buy[1], total))
+            buy_total += total
     if sell_list:
         print("\n----- Vente Action -----")
         for sell in sell_list:
-            print("{} ({}) - {}€/u  {}€".format(sell[0], -sell[2], sell[1], sell[1] * -sell[2]))
+            total = sell[1] * -sell[2]
+            print("{} ({}) - {}€/u  {}€".format(sell[0], -sell[2], sell[1], sell_total))
+            sell_total += total
+    print("\n----- Récap -----")
+    print("Achat: {}€\nVente: {}€\nGain: {}€".format(buy_total, sell_total, sell_total-buy_total))
     time.sleep(2)
     wallet.real()

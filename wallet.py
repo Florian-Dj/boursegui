@@ -54,7 +54,6 @@ def submenu_real():
     1 - Achat
     2 - Vente
     3 - Supprimer
-    4 - Modifier
     0 - Retour""")
     choose = input("\nAction que vous voulez effectuer : ")
     if choose == "0":
@@ -65,8 +64,6 @@ def submenu_real():
         real_wallet.sell_wallet()
     elif choose == "3":
         real_wallet.delete_wallet()
-    elif choose == "4":
-        print("Modifier")
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)

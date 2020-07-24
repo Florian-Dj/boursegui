@@ -73,24 +73,44 @@ def submenu_real():
 # Virtual Wallet
 def virtual():
     print("""\nPortefeuille Virtuel
-    1 - Acheter
-    2 - Vendre
-    3 - Liste
-    4 - Analyse
-    5 - Historique
+    1 - Transaction
+    2 - Liste
+    3 - Analyse
+    4 - Historique
     0 - Retour""")
     choose = input("\nAction que vous voulez effectuer : ")
     if choose == "0":
         home()
     elif choose == "1":
-        virtual_wallet.buy_wallet()
+        submenu_virtual()
     elif choose == "2":
-        virtual_wallet.sell_wallet()
-    elif choose == "3":
         virtual_wallet.list_wallet()
-    elif choose == "4":
+    elif choose == "3":
         virtual_wallet.analysis_wallet()
+    elif choose == "4":
+        real_wallet.history_wallet()
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)
         virtual()
+
+
+def submenu_virtual():
+    print("""\nPortefeuille Virtuel
+    1 - Achat
+    2 - Vente
+    3 - Supprimer
+    0 - Retour""")
+    choose = input("\nAction que vous voulez effectuer : ")
+    if choose == "0":
+        virtual()
+    elif choose == "1":
+        virtual_wallet.buy_wallet()
+    elif choose == "2":
+        virtual_wallet.sell_wallet()
+    elif choose == "3":
+        virtual_wallet.delete_wallet()
+    else:
+        print("\nMerci de choisir un choix valide")
+        time.sleep(2)
+        submenu_virtual()

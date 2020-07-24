@@ -34,7 +34,7 @@ def number_run():
         number_run()
 
 
-def parse(run):
+def parse(run, draw=True):
     sql = """SELECT * FROM my_list"""
     results = database.select(sql)
     if results:
@@ -46,9 +46,10 @@ def parse(run):
             evening = time_now.replace(hour=18, minute=40)
             if morning < time_now < evening and day != 5 and day != 6:
                 datetime_now = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
-                print()
-                print("--- {t} ---".format(t=datetime_now))
-                print()
+                if draw:
+                    print()
+                    print("--- {t} ---".format(t=datetime_now))
+                    print()
                 for result in results:
                     url = "https://www.boursorama.com/cours/" + result[2]
                     req = requests.get(url)
@@ -80,20 +81,23 @@ def parse(run):
                         nb += 1
                     company(company_id, value, var, volume, vol_var, datetime_now)
                     interest(company_id, value_div, dividend_date, datetime_now)
-                    print("\t\t{n}\nAction: {val}€\t{var}\nVolume: {vo}\t{vov}\nDividende: {vd}€\t{vp}"
-                          .format(n=name, val=value, var=var, vo=volume, vov=vol_var, vd=value_div[0], vp=value_div[3]))
-                    print()
+                    if draw:
+                        print("\t\t{n}\nAction: {val}€\t{var}\nVolume: {vo}\t{vov}\nDividende: {vd}€\t{vp}"
+                              .format(n=name, val=value, var=var, vo=volume, vov=vol_var, vd=value_div[0], vp=value_div[3]))
+                        print()
                 if run > 1:
                     time.sleep(60)
             else:
-                print("\nBourse fermée\n")
-                time.sleep(2)
-                break
+                if draw:
+                    print("\nBourse fermée\n")
+                    time.sleep(2)
+                    break
             i += 1
     else:
         print("\nAucune Entreprise dans la liste")
         time.sleep(2)
-    # main.main()
+    if draw:
+        main.main()
 
 
 def company(company_id, value, var, volume, vol_var, datetime_now):

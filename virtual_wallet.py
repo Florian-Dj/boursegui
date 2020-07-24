@@ -162,7 +162,7 @@ def analysis_wallet():
     results = database.select(sql)
     print()
     if results:
-        parse.parse(1)
+        parse.parse(1, draw=False)
         investment_total = 0
         resale_total = 0
         win_total = 0

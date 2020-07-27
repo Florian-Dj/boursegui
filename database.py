@@ -17,6 +17,7 @@ def create_data():
         create_table_company(conn)
         create_table_real_wallet(conn)
         create_table_virtual_wallet(conn)
+        create_table_companies(conn)
     conn.close()
 
 
@@ -96,6 +97,17 @@ def create_table_virtual_wallet(co):
             deal       VARCHAR(255) NOT NULL,
 
             CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES my_list(id) ON DELETE CASCADE
+        )"""
+    c.execute(create)
+
+
+def create_table_companies(co):
+    c = co.cursor()
+    create = """CREATE TABLE IF NOT EXISTS companies (
+            id      INTEGER        PRIMARY KEY    AUTOINCREMENT,
+            name    VARCHAR(255)   NOT     NULL    UNIQUE,
+            code    VARCHAR(255)   NOT     NULL    UNIQUE,
+            clues   VARCHAR(255)   NOT     NULL
         )"""
     c.execute(create)
 

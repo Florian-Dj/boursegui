@@ -9,8 +9,6 @@ import wallet
 
 
 def main():
-    print("Boursorama Scrape")
-    print("By Mucral\tV0.3\n")
     print("""
     1 - Run
     2 - Liste
@@ -37,4 +35,6 @@ def main():
 
 if __name__ == '__main__':
     database.create_data()
+    print("Boursorama Scrape")
+    print("By Mucral\tV0.3\n")
     main()

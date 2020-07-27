@@ -12,42 +12,47 @@ def buy_wallet():
     sql = "SELECT * FROM my_list"
     results = database.select(sql)
     print()
-    i = 1
-    for result in results:
-        print("{} - {}".format(i, result[1]))
-        i += 1
-    print("0 - Retour\n")
-    company = input("Quelle action avez-vous acheté ?")
-    company = int(company)
-    if company == 0:
-        wallet.submenu_virtual()
-    if 0 < company <= len(results):
-        company = results[company - 1]
+    if results:
+        i = 1
+        for result in results:
+            print("{} - {}".format(i, result[1]))
+            i += 1
+        print("0 - Retour\n")
+        company = input("Quelle action avez-vous acheté ?")
+        company = int(company)
+        if company == 0:
+            wallet.submenu_virtual()
+        if 0 < company <= len(results):
+            company = results[company - 1]
+        else:
+            print("Merci de rentrer une valeur valable")
+            time.sleep(2)
+            buy_wallet()
+        try:
+            volume = int(input("Combien avez-vous de titres ?"))
+        except ValueError:
+            print("Merci de rentrer une valeur correcte")
+            time.sleep(2)
+            buy_wallet()
+        try:
+            value = float(input("Quel prix unitaire ?"))
+        except ValueError:
+            print("Merci de rentrer une valeur correcte")
+            time.sleep(2)
+            buy_wallet()
+        sql = """INSERT INTO virtual_wallet (company_id, volume, value, deal) VALUES ({}, {}, {}, '{}')"""\
+            .format(company[0], volume, value, "buy")
+        result = database.insert(sql)
+        if result == "good":
+            total = volume * value
+            print("\nAchat {n} ({vo})\n{va}€/u  Total: {t}€"
+                  .format(n=company[1], vo=volume, va=value, t=total))
+        time.sleep(2)
+        wallet.virtual()
     else:
-        print("Merci de rentrer une valeur valable")
+        print("Pas d'actions")
         time.sleep(2)
-        buy_wallet()
-    try:
-        volume = int(input("Combien avez-vous de titres ?"))
-    except ValueError:
-        print("Merci de rentrer une valeur correcte")
-        time.sleep(2)
-        buy_wallet()
-    try:
-        value = float(input("Quel prix unitaire ?"))
-    except ValueError:
-        print("Merci de rentrer une valeur correcte")
-        time.sleep(2)
-        buy_wallet()
-    sql = """INSERT INTO virtual_wallet (company_id, volume, value, deal) VALUES ({}, {}, {}, '{}')"""\
-        .format(company[0], volume, value, "buy")
-    result = database.insert(sql)
-    if result == "good":
-        total = volume * value
-        print("\nAchat {n} ({vo})\n{va}€/u  Total: {t}€"
-              .format(n=company[1], vo=volume, va=value, t=total))
-    time.sleep(2)
-    wallet.virtual()
+        wallet.submenu_real()
 
 
 def sell_wallet():

@@ -95,8 +95,9 @@ def parse(run, draw=True):
             i += 1
     else:
         print("\nAucune Entreprise dans la liste")
-        time.sleep(2)
+        return "None"
     if draw:
+        time.sleep(2)
         main.main()
 
 

@@ -60,7 +60,11 @@ def url_code():
         name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
         sql = """INSERT INTO companies ('name', 'code') VALUES ('{n}', '{c}')""".format(n=name, c=code)
         request = database.insert(sql)
-        if request == "good":
+        if request == "update":
+            sql = """UPDATE companies SET list=1 WHERE code='{}'""".format(code)
+            database.update(sql)
+            print("\nAjout Compagnie\n{n} {u}".format(n=name, c=code, u=url))
+        elif request == "good":
             print("\nAjout Compagnie\n{n} {u}".format(n=name, c=code, u=url))
     else:
         print("Code Société Erreur")

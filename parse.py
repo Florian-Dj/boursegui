@@ -59,10 +59,13 @@ def clues(run):
         clues(run)
 
 
-def request(run, draw=True, info=""):
+def request(run, draw=True, info="all"):
+    print(run, draw, info)
     sql = ""
     if info == "True":
         sql = """SELECT * FROM companies WHERE list=1"""
+    elif info == "all":
+        sql = """SELECT * FROM companies"""
     else:
         sql = """SELECT * FROM companies WHERE clues='{}'""".format(info)
     results = database.select(sql)

@@ -129,6 +129,18 @@ def delete(sql):
         print(e)
 
 
+def update(sql):
+    try:
+        conn = connection()
+        c = conn.cursor()
+        c.execute(sql)
+        conn.commit()
+        conn.close()
+        return "update"
+    except Error as e:
+        print(e)
+
+
 def select(sql):
     try:
         conn = connection()

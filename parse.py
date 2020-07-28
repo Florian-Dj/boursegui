@@ -3,6 +3,7 @@
 import database
 import datetime
 import requests
+import companies
 import main
 import time
 from bs4 import BeautifulSoup
@@ -38,29 +39,19 @@ def number_run():
 
 
 def clues(run):
-    print("1 - Ma Liste")
-    sql = """SELECT clues FROM companies GROUP BY clues"""
-    results = database.select(sql)
-    i = 2
-    for result in results:
-        print("{} - {}".format(i, result[0]))
-        i += 1
-    print("0 - Retour")
-    choose = input("\nAction que vous voulez effectuer : ")
-    choose = int(choose)
+    choose, results = companies.clues()
     if choose == 0:
         home()
     elif choose == 1:
         request(run, info="True")
-    elif 2 <= choose <= len(results)+1:
-        request(run, results[choose-2][0])
+    elif 2 <= choose:
+        request(run, results[0][choose-2])
     else:
         print("Merci de rentrer un nombre correcte !")
         clues(run)
 
 
 def request(run, draw=True, info="all"):
-    print(run, draw, info)
     sql = ""
     if info == "True":
         sql = """SELECT * FROM companies WHERE list=1"""

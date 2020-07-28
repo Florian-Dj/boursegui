@@ -39,7 +39,7 @@ def add_society():
     elif choose == "1":
         url_code()
     elif choose == "2":
-        cac40()
+        clues()
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)
@@ -72,7 +72,7 @@ def url_code():
     home()
 
 
-def cac40():
+def clues():
     sql = """SELECT * FROM companies WHERE list=0"""
     results = database.select(sql)
     for result in results:
@@ -93,7 +93,7 @@ def cac40():
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)
-        cac40()
+        clues()
 
 
 def delete_society():

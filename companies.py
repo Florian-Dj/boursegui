@@ -24,5 +24,25 @@ def parse_cac40():
         i += 1
 
 
+def clues():
+    print("\n1 - Ma Liste")
+    sql = """SELECT clues FROM companies GROUP BY clues"""
+    results = database.select(sql)
+    i = 2
+    for result in results:
+        print("{} - {}".format(i, result[0]))
+        i += 1
+    print("0 - Retour")
+    choose = input("\nAction que vous voulez effectuer : ")
+    try:
+        choose = int(choose)
+        if 0 <= choose <= len(results)+1:
+            return choose, results
+        else:
+            clues()
+    except ValueError:
+        clues()
+
+
 if __name__ == '__main__':
-    parse_cac40()
+    clues()

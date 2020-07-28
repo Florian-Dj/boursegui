@@ -36,5 +36,5 @@ def main():
 if __name__ == '__main__':
     database.create_data()
     print("Boursorama Scrape")
-    print("By Mucral\tV0.4\n")
+    print("By Mucral\tV0.4")
     main()

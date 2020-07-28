@@ -32,15 +32,15 @@ def home():
 
 def dividend(year):
     print("\n--- Dividende {} ---".format(year))
-    sql = """SELECT companies.name, interest.value, company.value
+    sql = """SELECT companies.name, interest.value, company.value, (interest.value*100/company.value)
             FROM companies
             LEFT JOIN interest ON companies.id = interest.company_id
             LEFT JOIN company ON companies.id = company.company_id
-            WHERE years = {y}""".format(y=year)
+            WHERE years = {y}
+            ORDER BY (SELECT (interest.value*100/company.value) FROM companies) DESC""".format(y=year)
     results = database.select(sql)
     for result in results:
-        interest = round(result[1] * 100 / result[2], 2)
-        print("{}: {}€  {}%".format(result[0], result[1], interest))
+        print("{}: {}€  {}%".format(result[0], result[1], round(result[3], 2)))
     time.sleep(2)
     home()
 

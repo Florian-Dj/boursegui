@@ -42,7 +42,7 @@ def create_table_interest(co):
             date_div    DATE            DEFAULT     CURRENT_DATE,
             date_update DATE            DEFAULT     CURRENT_DATE,
             
-            CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES my_list(id) ON DELETE CASCADE
+            CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE
         )"""
     c.execute(create)
 
@@ -57,7 +57,7 @@ def create_table_company(co):
             vol_var     VAR(255)    NOT NULL,
             date_update DATETIME    DEFAULT CURRENT_TIMESTAMP,
             
-            CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES my_list(id) ON DELETE CASCADE
+            CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE
         )"""
     c.execute(create)
 
@@ -71,7 +71,7 @@ def create_table_real_wallet(co):
             value       FLOAT       NOT NULL,
             deal       VARCHAR(255) NOT NULL,
 
-            CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES my_list(id) ON DELETE CASCADE
+            CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE
         )"""
     c.execute(create)
 
@@ -85,7 +85,7 @@ def create_table_virtual_wallet(co):
             value       FLOAT       NOT NULL,
             deal       VARCHAR(255) NOT NULL,
 
-            CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES my_list(id) ON DELETE CASCADE
+            CONSTRAINT fk_company_id FOREIGN KEY (company_id) REFERENCES companies(id) ON DELETE CASCADE
         )"""
     c.execute(create)
 
@@ -93,10 +93,11 @@ def create_table_virtual_wallet(co):
 def create_table_companies(co):
     c = co.cursor()
     create = """CREATE TABLE IF NOT EXISTS companies (
-            id      INTEGER        PRIMARY KEY    AUTOINCREMENT,
-            name    VARCHAR(255)   NOT     NULL    UNIQUE,
-            code    VARCHAR(255)   NOT     NULL    UNIQUE,
-            clues   VARCHAR(255)   NOT     NULL
+            id      INTEGER        PRIMARY KEY  AUTOINCREMENT,
+            name    VARCHAR(255)   NOT NULL     UNIQUE,
+            code    VARCHAR(255)   NOT NULL     UNIQUE,
+            clues   VARCHAR(255)   NOT NULL,
+            list    BOOLEAN        DEFAULT      FALSE
         )"""
     c.execute(create)
 

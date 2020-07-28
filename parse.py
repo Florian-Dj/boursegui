@@ -17,12 +17,15 @@ def home():
     choose = input("\nAction que vous voulez effectuer : ")
     if choose == "0":
         main.main()
-    if choose == "1":
+    elif choose == "1":
         clues(1)
-    if choose == "2":
+    elif choose == "2":
         number_run()
-    if choose == "3":
+    elif choose == "3":
         clues(32768)
+    else:
+        print("Merci de rentrer un nombre correcte !")
+        home()
 
 
 def number_run():
@@ -35,17 +38,25 @@ def number_run():
 
 
 def clues(run):
-    print("""
-    1 - Ma Liste
-    2 - CAC40
-    0 - Retour""")
+    print("1 - Ma Liste")
+    sql = """SELECT clues FROM companies GROUP BY clues"""
+    results = database.select(sql)
+    i = 2
+    for result in results:
+        print("{} - {}".format(i, result[0]))
+        i += 1
+    print("0 - Retour")
     choose = input("\nAction que vous voulez effectuer : ")
-    if choose == "0":
+    choose = int(choose)
+    if choose == 0:
         home()
-    if choose == "1":
+    elif choose == 1:
         request(run, info="True")
-    if choose == "2":
-        request(run, info="CAC40")
+    elif 2 <= choose <= len(results)+1:
+        request(run, results[choose-2][0])
+    else:
+        print("Merci de rentrer un nombre correcte !")
+        clues(run)
 
 
 def request(run, draw=True, info=""):
@@ -57,6 +68,11 @@ def request(run, draw=True, info=""):
     results = database.select(sql)
     if results:
         parse(run, draw, results)
+        if draw:
+            time.sleep(2)
+            main.main()
+        else:
+            return "None"
     else:
         print("\nAucune Entreprise dans la liste")
         if draw:

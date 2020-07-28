@@ -52,7 +52,6 @@ def clues(run):
 
 
 def request(run, draw=True, info="all"):
-    sql = ""
     if info == "True":
         sql = """SELECT * FROM companies WHERE list=1"""
     elif info == "all":

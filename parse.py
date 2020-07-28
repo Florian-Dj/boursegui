@@ -43,7 +43,7 @@ def parse(run, draw=True):
             day = datetime.datetime.today().weekday()
             time_now = datetime.datetime.now()
             morning = time_now.replace(hour=9, minute=00)
-            evening = time_now.replace(hour=18, minute=40)
+            evening = time_now.replace(hour=17, minute=40)
             if morning < time_now < evening and day != 5 and day != 6:
                 datetime_now = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
                 if draw:

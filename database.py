@@ -12,7 +12,6 @@ def create_data():
         open(data_name, "w")
     conn = connection()
     if conn is not None:
-        create_table_my_list(conn)
         create_table_interest(conn)
         create_table_company(conn)
         create_table_real_wallet(conn)
@@ -30,16 +29,6 @@ def connection():
     except Error as e:
         print(e)
     return conn
-
-
-def create_table_my_list(co):
-    c = co.cursor()
-    create = """CREATE TABLE IF NOT EXISTS my_list (
-            id      INTEGER        PRIMARY KEY    AUTOINCREMENT,
-            name    VARCHAR(255)   NOT     NULL    UNIQUE,
-            code    VARCHAR(255)   NOT     NULL    UNIQUE
-        )"""
-    c.execute(create)
 
 
 def create_table_interest(co):

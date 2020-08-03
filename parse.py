@@ -39,15 +39,18 @@ def number_run():
 
 
 def clues(run):
-    choose, results = companies.clues()
+    choose, info = companies.clues()
     if choose == 0:
         home()
     elif choose == 1:
-        request(run, info="True")
-    elif 2 <= choose:
-        request(run, results[0][choose-2])
+        request(run, info="list")
+    elif choose == 2:
+        request(run, info="all")
+    elif 3 <= choose:
+        request(run, info=info)
     else:
         print("Merci de rentrer un nombre correcte !")
+        time.sleep(2)
         clues(run)
 
 
@@ -60,7 +63,7 @@ def request(run, draw=True, info="all"):
         sql = """SELECT * FROM companies WHERE clues='{}'""".format(info)
     results = database.select(sql)
     if results:
-        parse(run, draw, results)
+        parse(run, results, draw=True)
         if draw:
             time.sleep(2)
             main.main()
@@ -75,13 +78,13 @@ def request(run, draw=True, info="all"):
             return "None"
 
 
-def parse(run, draw, results):
+def parse(run, results, draw):
     i = 1
     while i <= run:
         day = datetime.datetime.today().weekday()
         time_now = datetime.datetime.now()
         morning = time_now.replace(hour=9, minute=00)
-        evening = time_now.replace(hour=17, minute=40)
+        evening = time_now.replace(hour=18, minute=40)
         if morning < time_now < evening and day != 5 and day != 6:
             datetime_now = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
             if draw:
@@ -117,7 +120,7 @@ def parse(run, draw, results):
                                                         " c-table__cell--align-top / u-text-left u-text-right u-ellipsis")[nb]
                     value_div.append(value_div_other.text.replace(" ", "").replace("\n", "").replace("EUR", ""))
                     nb += 1
-                company(company_id, value, var, volume, vol_var, datetime_now)
+                # company(company_id, value, var, volume, vol_var, datetime_now)
                 interest(company_id, value_div, dividend_date, datetime_now)
                 if draw:
                     print("\t\t{n}\nAction: {val}€\t{var}\nVolume: {vo}\t{vov}\nDividende: {vd}€\t{vp}"
@@ -134,14 +137,17 @@ def parse(run, draw, results):
 
 
 def company(company_id, value, var, volume, vol_var, datetime_now):
+    print("sql")
     sql = """INSERT INTO company (company_id, value, var, volume, vol_var, date_update)
             VALUES ({}, '{}', '{}', {}, '{}', '{}')"""\
         .format(company_id, value, var, volume, vol_var, datetime_now)
     req = database.insert(sql)
+    print(req)
     if req == "update":
         sql = """UPDATE company SET value = '{}', var = '{}', volume = {}, vol_var = '{}', date_update = '{}'
                 WHERE company_id = {}""".format(value, var, volume, vol_var, datetime_now, company_id)
-        database.insert(sql)
+        database.update(sql)
+        print("Ok")
 
 
 def interest(company_id, dividend, date_div, datetime_now):

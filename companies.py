@@ -3,6 +3,8 @@
 import requests
 from bs4 import BeautifulSoup
 import database
+import time
+import main
 
 
 def parse_cac40():
@@ -26,23 +28,30 @@ def parse_cac40():
 
 def clues():
     print("\n1 - Ma Liste")
+    print("2 - Tout")
     sql = """SELECT clues FROM companies GROUP BY clues"""
     results = database.select(sql)
-    i = 2
+    i = 3
     for result in results:
-        print("{} - {}".format(i, result[0]))
-        i += 1
+        if result[0]:
+            print("{} - {}".format(i, result[0]))
+            i += 1
     print("0 - Retour")
     choose = input("\nAction que vous voulez effectuer : ")
     try:
         choose = int(choose)
         if 0 <= choose <= len(results)+1:
-            return choose, results
+            info = results[choose-2][0]
+            return choose, info
         else:
-            clues()
+            print("\nMerci de rentrer un nombre correcte !")
+            time.sleep(2)
+            main.main()
     except ValueError:
-        clues()
+        print("\nMerci de rentrer un nombre correcte !")
+        time.sleep(2)
+        main.main()
 
 
 if __name__ == '__main__':
-    clues()
+    parse_cac40()

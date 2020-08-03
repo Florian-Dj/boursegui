@@ -77,8 +77,9 @@ def check_company(info):
         i = 1
         print()
         for result in results:
-            print("{} - {}".format(i, result[1]))
-            i += 1
+            if result[1]:
+                print("{} - {}".format(i, result[1]))
+                i += 1
         print("0 - Retour")
         choose = input("\nQuelle société voulez-vous voir les dividendes ? ")
         choose = int(choose)

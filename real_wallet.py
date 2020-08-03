@@ -9,7 +9,7 @@ import time
 def buy_wallet():
     value = None
     volume = None
-    sql = "SELECT * FROM my_list"
+    sql = "SELECT * FROM companies"
     results = database.select(sql)
     print()
     if results:

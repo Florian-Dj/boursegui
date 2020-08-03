@@ -96,7 +96,7 @@ def create_table_companies(co):
             id      INTEGER        PRIMARY KEY  AUTOINCREMENT,
             name    VARCHAR(255)   NOT NULL     UNIQUE,
             code    VARCHAR(255)   NOT NULL     UNIQUE,
-            clues   VARCHAR(255)   NOT NULL,
+            clues   VARCHAR(255),
             list    BOOLEAN        DEFAULT      FALSE
         )"""
     c.execute(create)
@@ -110,7 +110,8 @@ def insert(sql):
         conn.commit()
         conn.close()
         return "good"
-    except conn.IntegrityError:
+    except conn.IntegrityError as e:
+        print(e)
         return "update"
     except Error as e:
         print(e)

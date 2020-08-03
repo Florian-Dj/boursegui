@@ -28,24 +28,6 @@ def home():
         home()
 
 
-def add_society():
-    print("""
-    1 - URL / Code
-    2 - CAC40
-    0 - Retour""")
-    choose = input("\nAction que vous voulez effectuer : ")
-    if choose == "0":
-        home()
-    elif choose == "1":
-        url_code()
-    elif choose == "2":
-        clues()
-    else:
-        print("\nMerci de choisir un choix valide")
-        time.sleep(2)
-        home()
-
-
 def url_code():
     print()
     code = input("Url ou Code de la société à rajouter : ")
@@ -58,7 +40,7 @@ def url_code():
     if "cours" in req.url:
         soup = BeautifulSoup(req.content, 'html.parser')
         name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
-        sql = """INSERT INTO companies ('name', 'code') VALUES ('{n}', '{c}')""".format(n=name, c=code)
+        sql = """INSERT INTO companies ('name', 'code', list) VALUES ('{n}', '{c}', 1)""".format(n=name, c=code)
         request = database.insert(sql)
         if request == "update":
             sql = """UPDATE companies SET list=1 WHERE code='{}'""".format(code)
@@ -94,6 +76,24 @@ def clues():
         print("\nMerci de choisir un choix valide")
         time.sleep(2)
         clues()
+
+
+def add_society():
+    print("""
+    1 - URL / Code
+    2 - CAC40
+    0 - Retour""")
+    choose = input("\nAction que vous voulez effectuer : ")
+    if choose == "0":
+        home()
+    elif choose == "1":
+        url_code()
+    elif choose == "2":
+        clues()
+    else:
+        print("\nMerci de choisir un choix valide")
+        time.sleep(2)
+        home()
 
 
 def delete_society():

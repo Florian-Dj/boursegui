@@ -173,7 +173,6 @@ def analysis_wallet():
         win_total = 0
         print()
         for result in results:
-            print(result)
             if result[6] > 0:
                 investment = round(result[6] * result[4], 2)
                 resale = round(result[6] * result[5], 2)
@@ -201,9 +200,9 @@ def analysis_wallet():
 
 
 def history_wallet():
-    sql = """SELECT my_list.name, real_wallet.value, real_wallet.volume, real_wallet.deal
+    sql = """SELECT companies.name, real_wallet.value, real_wallet.volume, real_wallet.deal
             FROM real_wallet
-            LEFT JOIN my_list ON my_list.id = real_wallet.company_id"""
+            LEFT JOIN companies ON companies.id = real_wallet.company_id"""
     results = database.select(sql)
     buy_list = []
     sell_list = []

@@ -111,7 +111,6 @@ def insert(sql):
         conn.close()
         return "good"
     except conn.IntegrityError as e:
-        print(e)
         return "update"
     except Error as e:
         print(e)

@@ -55,15 +55,15 @@ def clues(run):
 
 
 def request(run, draw=True, info="all"):
-    if info == "True":
+    if info == "all":
+        sql = """SELECT * FROM companies ORDER BY name"""
+    elif info == "list":
         sql = """SELECT * FROM companies WHERE list=1"""
-    elif info == "all":
-        sql = """SELECT * FROM companies"""
     else:
         sql = """SELECT * FROM companies WHERE clues='{}'""".format(info)
     results = database.select(sql)
     if results:
-        parse(run, results, draw=True)
+        parse(run, results)
         if draw:
             time.sleep(2)
             main.main()
@@ -74,11 +74,9 @@ def request(run, draw=True, info="all"):
         if draw:
             time.sleep(2)
             main.main()
-        else:
-            return "None"
 
 
-def parse(run, results, draw):
+def parse(run, results, draw=True):
     i = 1
     while i <= run:
         day = datetime.datetime.today().weekday()
@@ -121,7 +119,7 @@ def parse(run, results, draw):
                     value_div.append(value_div_other.text.replace(" ", "").replace("\n", "").replace("EUR", ""))
                     nb += 1
                 # company(company_id, value, var, volume, vol_var, datetime_now)
-                interest(company_id, value_div, dividend_date, datetime_now)
+                # interest(company_id, value_div, dividend_date, datetime_now)
                 if draw:
                     print("\t\t{n}\nAction: {val}€\t{var}\nVolume: {vo}\t{vov}\nDividende: {vd}€\t{vp}"
                           .format(n=name, val=value, var=var, vo=volume, vov=vol_var, vd=value_div[0], vp=value_div[3]))
@@ -137,17 +135,14 @@ def parse(run, results, draw):
 
 
 def company(company_id, value, var, volume, vol_var, datetime_now):
-    print("sql")
     sql = """INSERT INTO company (company_id, value, var, volume, vol_var, date_update)
             VALUES ({}, '{}', '{}', {}, '{}', '{}')"""\
         .format(company_id, value, var, volume, vol_var, datetime_now)
     req = database.insert(sql)
-    print(req)
     if req == "update":
         sql = """UPDATE company SET value = '{}', var = '{}', volume = {}, vol_var = '{}', date_update = '{}'
                 WHERE company_id = {}""".format(value, var, volume, vol_var, datetime_now, company_id)
         database.update(sql)
-        print("Ok")
 
 
 def interest(company_id, dividend, date_div, datetime_now):

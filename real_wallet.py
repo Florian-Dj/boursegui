@@ -142,8 +142,8 @@ def delete_wallet():
 
 
 def list_wallet():
-    sql = """SELECT my_list.name, real_wallet.value, real_wallet.volume, SUM(volume) FROM real_wallet
-            LEFT JOIN my_list ON my_list.id = real_wallet.company_id
+    sql = """SELECT companies.name, real_wallet.value, real_wallet.volume, SUM(volume) FROM real_wallet
+            LEFT JOIN companies ON companies.id = real_wallet.company_id
             GROUP BY real_wallet.company_id"""
     results = database.select(sql)
     print()
@@ -159,29 +159,32 @@ def list_wallet():
 
 
 def analysis_wallet():
-    sql = """SELECT my_list.name, real_wallet.volume, real_wallet.value, company.value, SUM(real_wallet.volume) FROM real_wallet
-            LEFT JOIN my_list ON my_list.id = real_wallet.company_id
-            LEFT JOIN company ON my_list.id = company.company_id
+    sql = """SELECT companies.id, companies.name, companies.code, real_wallet.volume,
+                    real_wallet.value, company.value, SUM(real_wallet.volume)
+            FROM real_wallet
+            LEFT JOIN companies ON companies.id = real_wallet.company_id
+            LEFT JOIN company ON companies.id = company.company_id
             GROUP BY real_wallet.company_id"""
     results = database.select(sql)
-    print()
     if results:
-        parse.parse(1, draw=False)
+        parse.parse(1, results, draw=False)
         investment_total = 0
         resale_total = 0
         win_total = 0
+        print()
         for result in results:
-            if result[4] > 0:
-                investment = round(result[1] * result[2], 2)
-                resale = round(result[1] * result[3], 2)
-                diff = round(result[3] - result[2], 2)
-                gain = round((result[3] - result[2]) * result[1], 2)
+            print(result)
+            if result[6] > 0:
+                investment = round(result[6] * result[4], 2)
+                resale = round(result[6] * result[5], 2)
+                diff = round(result[5] - result[4], 2)
+                gain = round((result[5] - result[4]) * result[6], 2)
                 percentage = round((resale / investment - 1) * 100, 2)
                 print("-------- {n} ({v}) --------\n"
                       "Achat: {bu}€/u  {bt}€\n"
                       "Revente: {su}€/u  {st}€\n"
                       "Gain: {gu}€  {gt}€  {p}%\n"
-                      .format(n=result[0], v=result[1], bu=result[2], bt=investment, su=result[3], st=resale, gu=diff, gt=gain, p=percentage))
+                      .format(n=result[1], v=result[6], bu=result[4], bt=investment, su=result[5], st=resale, gu=diff, gt=gain, p=percentage))
                 investment_total += investment
                 resale_total += resale
                 win_total += gain

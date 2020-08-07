@@ -10,7 +10,7 @@ import main
 def parse_cac40():
     i = 1
     while i <= 2:
-        url = "https://www.boursorama.com/bourse/actions/cotations/page-{}".format(i)
+        url = "https://www.boursorama.com/bourse/actions/palmares/france/page-{}".format(i)
         param = "?quotation_az_filter%5Bmarket%5D=1rPCAC"
         req = requests.get(url + param)
         soup = BeautifulSoup(req.content, 'html.parser')

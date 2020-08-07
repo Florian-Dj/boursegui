@@ -58,8 +58,8 @@ def buy_wallet():
 def sell_wallet():
     volume = 0
     value = 0
-    sql = """SELECT my_list.name, real_wallet.value, real_wallet.volume, my_list.id FROM real_wallet
-            LEFT JOIN my_list ON my_list.id = real_wallet.company_id
+    sql = """SELECT companies.name, real_wallet.value, real_wallet.volume, companies.id FROM real_wallet
+            LEFT JOIN companies ON companies.id = real_wallet.company_id
             WHERE deal = 'buy'"""
     results = database.select(sql)
     i = 1

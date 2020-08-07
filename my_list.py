@@ -55,7 +55,7 @@ def url_code():
 
 
 def clues():
-    sql = """SELECT * FROM companies WHERE list=0"""
+    sql = """SELECT * FROM companies WHERE clues='CAC40' AND list=0"""
     results = database.select(sql)
     for result in results:
         print("{} - {}".format(result[0], result[1]))

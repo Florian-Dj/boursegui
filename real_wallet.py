@@ -110,8 +110,8 @@ def sell_wallet():
 
 
 def delete_wallet():
-    sql = """SELECT my_list.name, value, volume, my_list.id, real_id FROM real_wallet
-            LEFT JOIN my_list ON my_list.id = real_wallet.company_id"""
+    sql = """SELECT companies.name, value, volume, companies.id, real_id FROM real_wallet
+            LEFT JOIN companies ON companies.id = real_wallet.company_id"""
     results = database.select(sql)
     print()
     i = 1

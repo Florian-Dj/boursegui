@@ -142,7 +142,7 @@ def delete_wallet():
 
 
 def list_wallet():
-    sql = """SELECT companies.name, real_wallet.value, real_wallet.volume, SUM(volume) FROM real_wallet
+    sql = """SELECT companies.name, round(SUM(volume*value)/SUM(volume),2), real_wallet.volume, SUM(volume) FROM real_wallet
             LEFT JOIN companies ON companies.id = real_wallet.company_id
             GROUP BY real_wallet.company_id"""
     results = database.select(sql)
@@ -150,8 +150,7 @@ def list_wallet():
     if results:
         for result in results:
             if result[3] > 0:
-                total = result[1] * result[2]
-                print("{} ({}) - {}€/u  {}€".format(result[0], result[3], result[1], total))
+                print("{} ({}) - {}€/u".format(result[0], result[3], result[1]))
     else:
         print("Pas d'actions")
     time.sleep(2)
@@ -159,8 +158,9 @@ def list_wallet():
 
 
 def analysis_wallet():
-    sql = """SELECT companies.id, companies.name, companies.code, real_wallet.volume,
-                    real_wallet.value, company.value, SUM(real_wallet.volume)
+    sql = """SELECT companies.id, companies.name, companies.code,
+                    round(SUM(real_wallet.volume*real_wallet.value)/SUM(real_wallet.volume),2),
+                    company.value, SUM(real_wallet.volume)
             FROM real_wallet
             LEFT JOIN companies ON companies.id = real_wallet.company_id
             LEFT JOIN company ON companies.id = company.company_id
@@ -173,17 +173,17 @@ def analysis_wallet():
         win_total = 0
         print()
         for result in results:
-            if result[6] > 0:
-                investment = round(result[6] * result[4], 2)
-                resale = round(result[6] * result[5], 2)
-                diff = round(result[5] - result[4], 2)
-                gain = round((result[5] - result[4]) * result[6], 2)
+            if result[5] > 0:
+                investment = round(result[5] * result[3], 2)
+                resale = round(result[5] * result[4], 2)
+                diff = round(result[4] - result[3], 2)
+                gain = round((result[4] - result[3]) * result[5], 2)
                 percentage = round((resale / investment - 1) * 100, 2)
                 print("-------- {n} ({v}) --------\n"
                       "Achat: {bu}€/u  {bt}€\n"
                       "Revente: {su}€/u  {st}€\n"
                       "Gain: {gu}€  {gt}€  {p}%\n"
-                      .format(n=result[1], v=result[6], bu=result[4], bt=investment, su=result[5], st=resale, gu=diff, gt=gain, p=percentage))
+                      .format(n=result[1], v=result[5], bu=result[3], bt=investment, su=result[4], st=resale, gu=diff, gt=gain, p=percentage))
                 investment_total += investment
                 resale_total += resale
                 win_total += gain
@@ -235,3 +235,14 @@ def history_wallet():
         print("Pas d'actions")
     time.sleep(2)
     wallet.real()
+
+
+def test():
+    sql = """SELECT * FROM real_wallet GROUP BY company_id"""
+    results = database.select(sql)
+    for result in results:
+        print(result)
+
+
+if __name__ == '__main__':
+    test()

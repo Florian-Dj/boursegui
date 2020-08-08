@@ -68,6 +68,7 @@ def sell_wallet():
         for result in results:
             print("{} - {} ({})  {}€/u".format(i, result[0], result[2], result[1]))
             i += 1
+        print("0 - Retour")
         company = input("\nQuelle action avez-vous vendu ?")
         company = int(company)
         if company == 0:
@@ -123,7 +124,7 @@ def delete_wallet():
         action = input("Quelle action voulez-vous supprimer ?")
         action = int(action)
         if action == 0:
-            wallet.real()
+            wallet.submenu_real()
         if 0 < action <= len(results):
             action = results[action - 1]
             sql = "DELETE FROM real_wallet WHERE real_id={i}"\
@@ -166,12 +167,12 @@ def analysis_wallet():
             LEFT JOIN company ON companies.id = company.company_id
             GROUP BY real_wallet.company_id"""
     results = database.select(sql)
+    print()
     if results:
         parse.parse(1, results, draw=False)
         investment_total = 0
         resale_total = 0
         win_total = 0
-        print()
         for result in results:
             if result[5] > 0:
                 investment = round(result[5] * result[3], 2)
@@ -235,14 +236,3 @@ def history_wallet():
         print("Pas d'actions")
     time.sleep(2)
     wallet.real()
-
-
-def test():
-    sql = """SELECT * FROM real_wallet GROUP BY company_id"""
-    results = database.select(sql)
-    for result in results:
-        print(result)
-
-
-if __name__ == '__main__':
-    test()

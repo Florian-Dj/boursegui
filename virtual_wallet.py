@@ -9,7 +9,7 @@ import time
 def buy_wallet():
     value = None
     volume = None
-    sql = "SELECT * FROM my_list"
+    sql = "SELECT * FROM companies"
     results = database.select(sql)
     print()
     if results:
@@ -52,23 +52,23 @@ def buy_wallet():
     else:
         print("Pas d'actions")
         time.sleep(2)
-        wallet.submenu_real()
+        wallet.submenu_virtual()
 
 
 def sell_wallet():
     volume = 0
     value = 0
-    sql = """SELECT my_list.name, virtual_wallet.value, virtual_wallet.volume, my_list.id FROM virtual_wallet
-            LEFT JOIN my_list ON my_list.id = virtual_wallet.company_id
+    sql = """SELECT companies.name, virtual_wallet.value, virtual_wallet.volume, companies.id FROM virtual_wallet
+            LEFT JOIN companies ON companies.id = virtual_wallet.company_id
             WHERE deal = 'buy'"""
     results = database.select(sql)
     i = 1
     print()
     if results:
         for result in results:
-            print(result)
             print("{} - {} ({})  {}€/u".format(i, result[0], result[2], result[1]))
             i += 1
+        print("0 - Retour")
         company = input("\nQuelle action avez-vous vendu ?")
         company = int(company)
         if company == 0:
@@ -111,8 +111,8 @@ def sell_wallet():
 
 
 def delete_wallet():
-    sql = """SELECT my_list.name, value, volume, my_list.id, virtual_id FROM virtual_wallet
-            LEFT JOIN my_list ON my_list.id = virtual_wallet.company_id"""
+    sql = """SELECT companies.name, value, volume, companies.id, virtual_id FROM virtual_wallet
+            LEFT JOIN companies ON companies.id = virtual_wallet.company_id"""
     results = database.select(sql)
     print()
     i = 1
@@ -124,7 +124,7 @@ def delete_wallet():
         action = input("Quelle action voulez-vous supprimer ?")
         action = int(action)
         if action == 0:
-            wallet.virtual()
+            wallet.submenu_virtual()
         if 0 < action <= len(results):
             action = results[action - 1]
             sql = "DELETE FROM virtual_wallet WHERE virtual_id={i}"\
@@ -143,16 +143,15 @@ def delete_wallet():
 
 
 def list_wallet():
-    sql = """SELECT my_list.name, virtual_wallet.value, virtual_wallet.volume, SUM(volume) FROM virtual_wallet
-            LEFT JOIN my_list ON my_list.id = virtual_wallet.company_id
+    sql = """SELECT companies.name, round(SUM(volume*value)/SUM(volume),2), virtual_wallet.volume, SUM(volume) FROM virtual_wallet
+            LEFT JOIN companies ON companies.id = virtual_wallet.company_id
             GROUP BY virtual_wallet.company_id"""
     results = database.select(sql)
     print()
     if results:
         for result in results:
             if result[3] > 0:
-                total = result[1] * result[2]
-                print("{} ({}) - {}€/u  {}€".format(result[0], result[3], result[1], total))
+                print("{} ({}) - {}€/u".format(result[0], result[3], result[1]))
     else:
         print("Pas d'actions")
     time.sleep(2)
@@ -160,29 +159,32 @@ def list_wallet():
 
 
 def analysis_wallet():
-    sql = """SELECT my_list.name, virtual_wallet.volume, virtual_wallet.value, company.value, SUM(virtual_wallet.volume) FROM virtual_wallet
-            LEFT JOIN my_list ON my_list.id = virtual_wallet.company_id
-            LEFT JOIN company ON my_list.id = company.company_id
+    sql = """SELECT companies.id, companies.name, companies.code,
+                    round(SUM(virtual_wallet.volume*virtual_wallet.value)/SUM(virtual_wallet.volume),2),
+                    company.value, SUM(virtual_wallet.volume)
+            FROM virtual_wallet
+            LEFT JOIN companies ON companies.id = virtual_wallet.company_id
+            LEFT JOIN company ON companies.id = company.company_id
             GROUP BY virtual_wallet.company_id"""
     results = database.select(sql)
     print()
     if results:
-        parse.parse(1, draw=False)
+        parse.parse(1, results, draw=False)
         investment_total = 0
         resale_total = 0
         win_total = 0
         for result in results:
-            if result[4] > 0:
-                investment = round(result[1] * result[2], 2)
-                resale = round(result[1] * result[3], 2)
-                diff = round(result[3] - result[2], 2)
-                gain = round((result[3] - result[2]) * result[1], 2)
+            if result[5] > 0:
+                investment = round(result[5] * result[3], 2)
+                resale = round(result[5] * result[4], 2)
+                diff = round(result[4] - result[3], 2)
+                gain = round((result[4] - result[3]) * result[5], 2)
                 percentage = round((resale / investment - 1) * 100, 2)
                 print("-------- {n} ({v}) --------\n"
                       "Achat: {bu}€/u  {bt}€\n"
                       "Revente: {su}€/u  {st}€\n"
                       "Gain: {gu}€  {gt}€  {p}%\n"
-                      .format(n=result[0], v=result[1], bu=result[2], bt=investment, su=result[3], st=resale, gu=diff, gt=gain, p=percentage))
+                      .format(n=result[1], v=result[5], bu=result[3], bt=investment, su=result[4], st=resale, gu=diff, gt=gain, p=percentage))
                 investment_total += investment
                 resale_total += resale
                 win_total += gain
@@ -199,9 +201,9 @@ def analysis_wallet():
 
 
 def history_wallet():
-    sql = """SELECT my_list.name, virtual_wallet.value, virtual_wallet.volume, virtual_wallet.deal
+    sql = """SELECT companies.name, virtual_wallet.value, virtual_wallet.volume, virtual_wallet.deal
             FROM virtual_wallet
-            LEFT JOIN my_list ON my_list.id = virtual_wallet.company_id"""
+            LEFT JOIN companies ON companies.id = virtual_wallet.company_id"""
     results = database.select(sql)
     buy_list = []
     sell_list = []

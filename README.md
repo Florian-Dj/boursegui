@@ -3,7 +3,7 @@ Exécutable permettant de savoir le cours Boursorama, Portefeuille réel et virt
 La version est pour le moment en ligne de commande très simple à prendre en main.
 Une version graphique devrait voir le jour par la suite.
 
-## Requirements
+## Exigence
 - BeautifulSoup4 ==> 4.9.*+
 - Requests ==> 2.24.*+
 
@@ -45,7 +45,7 @@ Une version graphique devrait voir le jour par la suite.
 - Analyse d'une société sur Boursorama
 - Affichage de la valeur et du gain en pourcentage d'une action
 
-## ToDo List
+## Idées
 - Fichier d'options
     - Choisir le temps d'analyse (60s par défaut)
     - Affichage des données complétes ou partiels

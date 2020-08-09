@@ -51,3 +51,9 @@ Une version graphique devrait voir le jour par la suite.
     - Affichage des données complétes ou partiels
 - Analyses des données en fond de tâche
 - Importer/Exporter sa liste
+- Vérification de la mise à jour
+    - Téléchargement si nouvelle version détectée
+- Création d'alertes *(valeur, volume échangé, etc..)*
+    - Alerte sonore
+    - Options sur les son et le volume
+- Flux RSS *(alertes et actualités)*

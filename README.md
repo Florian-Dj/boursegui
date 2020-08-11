@@ -41,10 +41,6 @@ Une version graphique devrait voir le jour par la suite.
     - Année +2 ans
     - Toutes les années suivant une société précisent
 
-**v0.1**
-- Analyse d'une société sur Boursorama
-- Affichage de la valeur et du gain en pourcentage d'une action
-
 ## Idées
 - Fichier d'options
     - Choisir le temps d'analyse (60s par défaut)

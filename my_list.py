@@ -54,8 +54,9 @@ def url_code():
     home()
 
 
-def clues():
-    sql = """SELECT * FROM companies WHERE clues='CAC40' AND list=0"""
+def clues(clue):
+    print()
+    sql = """SELECT * FROM companies WHERE clues='{c}' AND list=0""".format(c=clue)
     results = database.select(sql)
     for result in results:
         print("{} - {}".format(result[0], result[1]))
@@ -75,23 +76,37 @@ def clues():
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)
-        clues()
+        clues(clue)
 
 
 def add_society():
-    print("""
-    1 - URL / Code
-    2 - CAC40
-    0 - Retour""")
+    sql = """SELECT clues FROM companies GROUP BY clues"""
+    results = database.select(sql)
+    print()
+    print("1 - URL / Code")
+    i = 2
+    for result in results:
+        if result[0]:
+            print("{} - {}".format(i, result[0]))
+            i += 1
+    print("0 - Retour")
     choose = input("\nAction que vous voulez effectuer : ")
-    if choose == "0":
-        home()
-    elif choose == "1":
-        url_code()
-    elif choose == "2":
-        clues()
-    else:
-        print("\nMerci de choisir un choix valide")
+    try:
+        choose = int(choose)
+        if choose == 0:
+            home()
+        elif choose == 1:
+            url_code()
+        elif 2 <= choose <= len(results):
+            clue = results[choose-1][0]
+            clues(clue)
+        else:
+            print("\nMerci de choisir un choix valide")
+            time.sleep(2)
+            home()
+    except ValueError as v:
+        print(v)
+        print("\nMerci de rentrer un nombre correcte !")
         time.sleep(2)
         home()
 

@@ -6,6 +6,7 @@ import dividend
 import database
 import parse
 import wallet
+import companies
 
 
 def main():
@@ -14,6 +15,7 @@ def main():
     2 - Liste
     3 - Dividende
     4 - Portefeuille
+    5 - Compagnies
     0 - Quitter""")
     choose = input("\nAction que vous voulez effectuer : ")
     if choose == "0":
@@ -26,7 +28,8 @@ def main():
         dividend.home()
     elif choose == "4":
         wallet.home()
-
+    elif choose == "5":
+        companies.clues()
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)

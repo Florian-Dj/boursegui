@@ -121,7 +121,8 @@ def parse(run, results, draw=True):
                 # company(company_id, value, var, volume, vol_var, datetime_now)
                 # interest(company_id, value_div, dividend_date, datetime_now)
                 if draw:
-                    print("   {n}".format(n=name))
+                    space = round((21 - len(name))/2)
+                    print("{s}{n}".format(n=name, s=space*" "))
                     print("Action: {val}€\t{var}".format(val=value, var=var))
                     print("Volume: {vo}\t{vov}".format(vo=volume, vov=vol_var))
                     print("Dividende: {vd}€\t{vp}".format(vd=value_div[0], vp=value_div[3]))

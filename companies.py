@@ -77,7 +77,3 @@ def clues():
         print("\nMerci de rentrer un nombre correcte !")
         time.sleep(2)
         main.main()
-
-
-if __name__ == '__main__':
-    parse_cac40()

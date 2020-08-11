@@ -6,6 +6,10 @@ import database
 import time
 import main
 
+list_companies = [("DAX30", "49", "5pDAX", 2), ("BEL20", "32", "FF11-BEL20", 1), ("IBEX35", "34", "FF55-IBEX", 2),
+                  ("Nasdaq100", "1", "%24NDX.X", 4), ("FTSE MIB", "39", "7fI945", 2), ("AEX25", "31", "1rAZMA", 1),
+                  ("PSI20", "35", "1rLPSI20", 1), ("Footsie 100", "44", "UKX.L", 4), ("SMI25", "41", "1hSMI", 1)]
+
 
 def parse_cac40():
     i = 1
@@ -18,12 +22,33 @@ def parse_cac40():
         for value in values:
             name = value.text
             if "'" in name:
-                name = name.split("'")[1]
+                name = name.replace("'", "")
             code = value.a['href'].split("/")[2]
             sql = """INSERT INTO companies ('name', 'code', 'clues') VALUES ('{n}', '{c}', '{i}')"""\
                 .format(n=name, c=code, i="CAC40")
             database.insert(sql)
         i += 1
+    parse_int()
+
+
+def parse_int():
+    for comp in list_companies:
+        i = 1
+        while i <= comp[3]:
+            url = "https://www.boursorama.com/bourse/actions/cotations/international/page-{}".format(i)
+            param = "?international_quotation_az_filter%5Bcountry%5D={}&international_quotation_az_filter%5Bmarket%5D={}".format(comp[1], comp[2])
+            req = requests.get(url + param)
+            soup = BeautifulSoup(req.content, 'html.parser')
+            values = soup.find_all(class_="o-pack__item u-ellipsis u-color-cerulean")
+            for value in values:
+                name = value.text
+                if "'" in name:
+                    name = name.replace("'", "")
+                code = value.a['href'].split("/")[2]
+                sql = """INSERT INTO companies ('name', 'code', 'clues') VALUES ('{n}', '{c}', '{i}')"""\
+                    .format(n=name, c=code, i=comp[0])
+                database.insert(sql)
+            i += 1
 
 
 def clues():

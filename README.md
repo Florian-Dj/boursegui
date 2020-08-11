@@ -42,6 +42,7 @@ Une version graphique devrait voir le jour par la suite.
     - Toutes les années suivant une société précisent
 
 ## Idées
+- Ajouter d'autre valeur boursière (DAX, Nasdaq, FTSE, ...)
 - Fichier d'options
     - Choisir le temps d'analyse (60s par défaut)
     - Affichage des données complétes ou partiels

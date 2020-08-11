@@ -113,8 +113,7 @@ def insert(sql):
     except conn.IntegrityError as e:
         return "update"
     except Error as e:
-        print(e)
-        print("\nCompagnie déjà dans la liste !\n")
+        return "error"
 
 
 def delete(sql):

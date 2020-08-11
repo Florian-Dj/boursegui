@@ -121,8 +121,10 @@ def parse(run, results, draw=True):
                 # company(company_id, value, var, volume, vol_var, datetime_now)
                 # interest(company_id, value_div, dividend_date, datetime_now)
                 if draw:
-                    print("\t\t{n}\nAction: {val}€\t{var}\nVolume: {vo}\t{vov}\nDividende: {vd}€\t{vp}"
-                          .format(n=name, val=value, var=var, vo=volume, vov=vol_var, vd=value_div[0], vp=value_div[3]))
+                    print("   {n}".format(n=name))
+                    print("Action: {val}€\t{var}".format(val=value, var=var))
+                    print("Volume: {vo}\t{vov}".format(vo=volume, vov=vol_var))
+                    print("Dividende: {vd}€\t{vp}".format(vd=value_div[0], vp=value_div[3]))
                     print()
             if run > 1:
                 time.sleep(60)

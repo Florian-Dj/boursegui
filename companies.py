@@ -15,7 +15,7 @@ def parse_cac40():
     i = 1
     while i <= 2:
         url = "https://www.boursorama.com/bourse/actions/palmares/france/page-{}".format(i)
-        param = "?quotation_az_filter%5Bmarket%5D=1rPCAC"
+        param = "?france_filter%5Bmarket%5D=1rPCAC&france_filter%5Bvariation%5D=128&france_filter%5Bperiod%5D=1"
         req = requests.get(url + param)
         soup = BeautifulSoup(req.content, 'html.parser')
         values = soup.find_all(class_="o-pack__item u-ellipsis u-color-cerulean")
@@ -24,6 +24,7 @@ def parse_cac40():
             if "'" in name:
                 name = name.replace("'", "")
             code = value.a['href'].split("/")[2]
+            print(name, code)
             sql = """INSERT INTO companies ('name', 'code', 'clues') VALUES ('{n}', '{c}', '{i}')"""\
                 .format(n=name, c=code, i="CAC40")
             database.insert(sql)

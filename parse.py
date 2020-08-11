@@ -82,7 +82,7 @@ def parse(run, results, draw=True):
         day = datetime.datetime.today().weekday()
         time_now = datetime.datetime.now()
         morning = time_now.replace(hour=9, minute=00)
-        evening = time_now.replace(hour=18, minute=40)
+        evening = time_now.replace(hour=17, minute=45)
         if morning < time_now < evening and day != 5 and day != 6:
             datetime_now = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
             if draw:
@@ -93,40 +93,42 @@ def parse(run, results, draw=True):
                 url = "https://www.boursorama.com/cours/" + result[2]
                 req = requests.get(url)
                 soup = BeautifulSoup(req.content, 'html.parser')
-                name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
-                value = soup.find_all('span', class_="c-instrument c-instrument--last")[0].text
-                var = soup.find_all('span', class_="c-instrument c-instrument--variation")[0].text
-                volume = soup.find_all('span', class_="c-instrument c-instrument--totalvolume")[0].text.replace(" ", "")
-                vol_var = soup.find_all('li', class_="c-list-info__item--small-gutter")[2]
-                vol_var = vol_var.text.replace(" ", "").split("\n")[3]
-                dividend_date = soup.find_all('li', class_="c-list-info__item c-list-info__item--fixed-width")[1]
-                dividend_date = dividend_date.text.replace(" ", "").split("\n")[3].split(".")
-                dividend_date = "20{}-{}-{}".format(dividend_date[2], dividend_date[1], dividend_date[0])
-                value_div = []
-                value_div_20 = soup.find('li', class_="c-list-info__item c-list-info__item--fixed-width")
-                value_div_20 = value_div_20.text.replace(" ", "").split("\n")[3]
-                company_id = result[0]
-                if value_div_20 == "-":
-                    value_div_20 = soup.find('td', class_="c-table__cell c-table__cell--dotted c-table__cell--inherit-height"
-                                                       " c-table__cell--align-top / u-text-left u-text-right u-ellipsis")
-                    value_div.append(value_div_20.text.replace(" ", "").replace("\n", "").replace("EUR", ""))
-                else:
-                    value_div.append(value_div_20.replace("EUR", ""))
-                nb = 1
-                while nb <= 5:
-                    value_div_other = soup.find_all('td', class_="c-table__cell c-table__cell--dotted c-table__cell--inherit-height"
-                                                        " c-table__cell--align-top / u-text-left u-text-right u-ellipsis")[nb]
-                    value_div.append(value_div_other.text.replace(" ", "").replace("\n", "").replace("EUR", ""))
-                    nb += 1
-                # company(company_id, value, var, volume, vol_var, datetime_now)
-                # interest(company_id, value_div, dividend_date, datetime_now)
-                if draw:
-                    space = round((21 - len(name))/2)
-                    print("{s}{n}".format(n=name, s=space*" "))
-                    print("Action: {val}€\t{var}".format(val=value, var=var))
-                    print("Volume: {vo}\t{vov}".format(vo=volume, vov=vol_var))
-                    print("Dividende: {vd}€\t{vp}".format(vd=value_div[0], vp=value_div[3]))
-                    print()
+                if soup.title.string != "Boursorama, Votre partenaire pour investir":
+                    name = soup.find(class_="c-faceplate__company-link").text.replace(" ", "").replace("\n", "")
+                    value = soup.find_all('span', class_="c-instrument c-instrument--last")[0].text
+                    var = soup.find_all('span', class_="c-instrument c-instrument--variation")[0].text
+                    volume = soup.find_all('span', class_="c-instrument c-instrument--totalvolume")[0].text.replace(" ", "")
+                    vol_var = soup.find_all('li', class_="c-list-info__item--small-gutter")[2]
+                    vol_var = vol_var.text.replace(" ", "").split("\n")[3]
+                    dividend_date = soup.find_all('li', class_="c-list-info__item c-list-info__item--fixed-width")[1]
+                    dividend_date = dividend_date.text.replace(" ", "").split("\n")[3].split(".")
+                    if dividend_date[0] != "-":
+                        dividend_date = "20{}-{}-{}".format(dividend_date[2], dividend_date[1], dividend_date[0])
+                    value_div = []
+                    value_div_20 = soup.find('li', class_="c-list-info__item c-list-info__item--fixed-width")
+                    value_div_20 = value_div_20.text.replace(" ", "").split("\n")[3]
+                    company_id = result[0]
+                    if value_div_20 == "-":
+                        value_div_20 = soup.find('td', class_="c-table__cell c-table__cell--dotted c-table__cell--inherit-height"
+                                                           " c-table__cell--align-top / u-text-left u-text-right u-ellipsis")
+                        value_div.append(value_div_20.text.replace(" ", "").replace("\n", "").replace("EUR", ""))
+                    else:
+                        value_div.append(value_div_20.replace("EUR", ""))
+                    nb = 1
+                    while nb <= 5:
+                        value_div_other = soup.find_all('td', class_="c-table__cell c-table__cell--dotted c-table__cell--inherit-height"
+                                                            " c-table__cell--align-top / u-text-left u-text-right u-ellipsis")[nb]
+                        value_div.append(value_div_other.text.replace(" ", "").replace("\n", "").replace("EUR", ""))
+                        nb += 1
+                    # company(company_id, value, var, volume, vol_var, datetime_now)
+                    # interest(company_id, value_div, dividend_date, datetime_now)
+                    if draw:
+                        space = round((21 - len(name))/2)
+                        print("{s}{n}".format(n=name, s=space*" "))
+                        print("Action: {val}€ {var}".format(val=value, var=var))
+                        print("Volume: {vo} {vov}".format(vo=volume, vov=vol_var))
+                        print("Dividende: {vd}€ {vp}".format(vd=value_div[0], vp=value_div[3]))
+                        print()
             if run > 1:
                 time.sleep(60)
         else:

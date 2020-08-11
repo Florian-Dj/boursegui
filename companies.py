@@ -46,6 +46,8 @@ def parse_int():
                 if "'" in name:
                     name = name.replace("'", "")
                 code = value.a['href'].split("/")[2]
+                if comp[0] == "FTSE MIB":
+                    print(name, code, comp)
                 sql = """INSERT INTO companies ('name', 'code', 'clues') VALUES ('{n}', '{c}', '{i}')"""\
                     .format(n=name, c=code, i=comp[0])
                 database.insert(sql)
@@ -108,3 +110,7 @@ def companies():
         print("\nMerci de rentrer un nombre correcte !")
         time.sleep(2)
         companies()
+
+
+if __name__ == '__main__':
+    parse_int()

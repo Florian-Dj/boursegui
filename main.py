@@ -15,7 +15,7 @@ def main():
     2 - Liste
     3 - Dividende
     4 - Portefeuille
-    5 - Compagnies
+    5 - Indices
     0 - Quitter""")
     choose = input("\nAction que vous voulez effectuer : ")
     if choose == "0":

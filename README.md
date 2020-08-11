@@ -15,7 +15,7 @@ Une version graphique devrait voir le jour par la suite.
 
 ## Mise à jour
 **V0.4 _(dev)_**
-- Ajout CAC40
+- Ajout CAC40, DAX30, BEL20, IBEX35, Nasdaq100, FTSE MIB, AEX25, PSI20, Footsie 100 et SMI25
     - Analyse des sociétés
     - Ajouter dans votre liste
     - Dividendes des sociétés
@@ -42,7 +42,6 @@ Une version graphique devrait voir le jour par la suite.
     - Toutes les années suivant une société précisent
 
 ## Idées
-- Ajouter d'autre valeur boursière (DAX, Nasdaq, FTSE, ...)
 - Fichier d'options
     - Choisir le temps d'analyse (60s par défaut)
     - Affichage des données complétes ou partiels
@@ -54,3 +53,6 @@ Une version graphique devrait voir le jour par la suite.
     - Alerte sonore
     - Options sur les son et le volume
 - Flux RSS *(alertes et actualités)*
+- Choix d'ajouter ou de supprimer Indices
+- Ajouter cours des indices
+- Fichier de logs

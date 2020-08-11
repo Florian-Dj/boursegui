@@ -77,3 +77,34 @@ def clues():
         print("\nMerci de rentrer un nombre correcte !")
         time.sleep(2)
         main.main()
+
+
+def companies():
+    print()
+    print("Liste des Indices")
+    sql = """SELECT clues FROM companies GROUP BY clues"""
+    results = database.select(sql)
+    i = 1
+    for result in results:
+        if result[0]:
+            print("{} - {}".format(i, result[0]))
+            i += 1
+    print("0 - Retour")
+    choose = input("\nAction que vous voulez effectuer : ")
+    try:
+        choose = int(choose)
+        if 0 < choose <= len(results)+1:
+            clue = results[choose][0]
+            sql = """SELECT name FROM companies WHERE clues='{}'""".format(clue)
+            results = database.select(sql)
+            print()
+            for result in results:
+                print(result[0])
+            time.sleep(5)
+            companies()
+        elif choose == 0:
+            main.main()
+    except ValueError:
+        print("\nMerci de rentrer un nombre correcte !")
+        time.sleep(2)
+        companies()

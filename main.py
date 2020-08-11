@@ -29,7 +29,7 @@ def main():
     elif choose == "4":
         wallet.home()
     elif choose == "5":
-        companies.clues()
+        companies.companies()
     else:
         print("\nMerci de choisir un choix valide")
         time.sleep(2)
